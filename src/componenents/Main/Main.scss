@@ -1,0 +1,11 @@
+.Main {
+  display: grid;
+  grid-template-columns: 18rem auto;
+  grid-gap: 1px;
+  height: calc(100% - var(--transport-height));
+  background: var(--light-main);
+
+  & > div {
+    background: var(--dark-main);
+  }
+}

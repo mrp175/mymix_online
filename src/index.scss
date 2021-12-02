@@ -3,6 +3,25 @@
   --dark-alt: #23272d;
   --light-main: #333940;
   --light-alt: #56606d;
+  --transport-height: 5rem;
+  --track-height: 7rem;
+  --button-size: calc(var(--track-height) / 2);
+  --border-width: 1px;
+  --text-light: white;
+  --button-hover: #333941;
+  --border-radius: 5px;
+}
+
+@mixin button {
+  background: var(--dark-alt);
+  border: none;
+  outline: none;
+  color: var(--text-light);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--light-main);
+  }
 }
 
 * {
