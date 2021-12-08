@@ -5,9 +5,11 @@
   grid-template-columns: 18rem auto;
   grid-gap: 1px;
   height: calc(100% - var(--transport-height));
-  background: var(--light-main);
+  background: var(--dark-main);
 
   .sidebar {
+    background: var(--dark-alt);
+
     &__add-track {
       @include button;
       height: 2rem;
@@ -17,5 +19,8 @@
       padding-left: 1rem;
       font-size: 1rem;
     }
+  }
+
+  .sequencer {
   }
 }

@@ -1,0 +1,12 @@
+.BarNumbers {
+  width: 100%;
+  height: 2rem;
+
+  &__canvas {
+    background: linear-gradient(
+      to bottom,
+      var(--dark-main) 50%,
+      var(--dark-alt) 50%
+    );
+  }
+}

@@ -1,6 +1,7 @@
 import "./Main.scss";
 import "../TrackControl/TrackControl";
 import TrackControl from "../TrackControl/TrackControl";
+import BarNumbers from "./Sequencer/BarNumbers/BarNumbers";
 
 export default function Main() {
   return (
@@ -9,7 +10,9 @@ export default function Main() {
         <button className="sidebar__add-track">+ Add Track</button>
         <TrackControl />
       </div>
-      <div className="sequencer"></div>
+      <div className="sequencer">
+        <BarNumbers />
+      </div>
     </div>
   );
 }
