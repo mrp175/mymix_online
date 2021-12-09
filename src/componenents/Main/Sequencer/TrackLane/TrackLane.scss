@@ -1,0 +1,10 @@
+.TrackLane {
+  background: var(--dark-alt);
+  height: 7rem;
+  border-top: 1px solid var(--light-main);
+  border-bottom: 1px solid var(--light-main);
+  width: calc(100vw - 19.1rem);
+
+  &__canvas {
+  }
+}

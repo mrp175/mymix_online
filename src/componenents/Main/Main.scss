@@ -22,5 +22,11 @@
   }
 
   .sequencer {
+    display: grid;
+    grid-template-columns: 1rem auto;
+
+    .track-container {
+      position: relative;
+    }
   }
 }
