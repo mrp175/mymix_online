@@ -9,7 +9,9 @@ export default function TrackLane() {
   return (
     <div className="TrackLane" ref={parentRef}>
       <canvas className="TrackLane__canvas" ref={canvasRef}></canvas>
-      <Waveform />
+      <div className="TrackLane__waveform__container">
+        <Waveform />
+      </div>
     </div>
   );
 }

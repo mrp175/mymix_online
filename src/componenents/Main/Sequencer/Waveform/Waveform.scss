@@ -1,9 +1,17 @@
 .Waveform {
   height: 100%;
   z-index: 999;
-  position: relative;
+  position: absolute;
+  left: 0;
+  top: 0;
 
   &__canvas {
     border-radius: 0.25rem;
+  }
+
+  .mock {
+    height: 100%;
+    width: 100%;
+    background: white;
   }
 }
