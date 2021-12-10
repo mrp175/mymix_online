@@ -1,6 +1,23 @@
+import React, { useRef, useEffect } from "react";
 import { getVariableStyle } from "./utils";
+import { convertRemToPixels } from "./utils";
 
-// Draws numbers and bar lines to canvas.
+const remScale = 1;
+const textSize = remScale / 1.45; //this is what it will be in rem.
+const barSpacing = 7; // This should scale with zoom.
+const scale = convertRemToPixels(remScale);
+
+// Create refs
+export function useCreateRefs(): [
+  React.RefObject<HTMLCanvasElement>,
+  React.RefObject<HTMLDivElement>
+] {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const parentRef = useRef<HTMLDivElement>(null);
+  return [canvasRef, parentRef];
+}
+
+// Draws numbers and bar lines to canvas. Used for the bar count at top of sequencer, and the backdrop for each tracklane.
 export function populateCanvas(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
@@ -8,7 +25,7 @@ export function populateCanvas(
   remSpacing: number,
   remToPx: number,
   textSize: number,
-  trackLane?: boolean
+  trackLane?: boolean // if true, doesn't draw numbers or half length lines. For use in a track lane only.
 ): void {
   ctx.lineWidth = 1;
   ctx.font = `${textSize}rem serif`;
@@ -36,16 +53,13 @@ export function populateCanvas(
   ctx.stroke();
 }
 
+// Handles adjust canvas width and redraws content when screen width changes.
 export function handleResize(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   parentRef: React.RefObject<HTMLDivElement>,
-  barSpacing: number,
-  scale: number,
-  textSize: number,
-  trackLane?: boolean
+  trackLane?: boolean // if true, doesn't draw numbers or half length lines. For use in a track lane only.
 ): void {
-  // canvas.width = 0 as number;
   canvas.height = parentRef.current?.offsetHeight as number;
   canvas.width = parentRef.current?.offsetWidth as number;
   populateCanvas(
@@ -59,4 +73,23 @@ export function handleResize(
   );
 }
 
-//setTimeout is currently required for page resizes to work properly. As code is run synchronously, setting canvasWidth to 0 doesn't work as another function has already done that and then set the canvas to the offset width. Setting canvas width to 0 must be done on all of the canvas elements before setting them to match the offsetwidth.
+// adds event listener for page resize and calls handleResize to deal with it
+export function useUseEffect(
+  canvasRef: React.RefObject<HTMLCanvasElement>,
+  parentRef: React.RefObject<HTMLDivElement>,
+  trackLane?: boolean
+) {
+  useEffect(function () {
+    const canvas = canvasRef.current as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    handleResize(canvas, ctx, parentRef, trackLane);
+    window.addEventListener("resize", () =>
+      handleResize(canvas, ctx, parentRef, trackLane)
+    );
+    return function () {
+      window.removeEventListener("resize", () =>
+        handleResize(canvas, ctx, parentRef, trackLane)
+      );
+    };
+  }, []);
+}

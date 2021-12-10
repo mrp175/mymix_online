@@ -1,6 +1,12 @@
-import React from "react";
 import "./Waveform.scss";
+import { useCreateRefs } from "../../../../utils/canvas";
 
 export default function Waveform() {
-  return <div className="Waveform">Waveform</div>;
+  const [canvasRef, parentRef] = useCreateRefs();
+
+  return (
+    <div className="Waveform" ref={parentRef}>
+      <canvas className="Waveform__canvas" ref={canvasRef}></canvas>
+    </div>
+  );
 }

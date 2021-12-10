@@ -18,6 +18,7 @@ export default function Main() {
           <BarNumbers />
           <div className="track-container" id="track-1">
             <TrackLane></TrackLane>
+            <Waveform />
           </div>
         </div>
       </div>
