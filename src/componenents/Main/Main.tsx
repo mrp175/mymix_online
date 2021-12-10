@@ -12,12 +12,12 @@ export default function Main() {
   console.log(position);
   const dispatch = useDispatch();
 
-  useEffect(
-    function () {
-      console.log(position);
-    },
-    [position]
-  );
+  // useEffect(
+  //   function () {
+  //     console.log(position);
+  //   },
+  //   [position]
+  // );
 
   return (
     <div className="Main">
