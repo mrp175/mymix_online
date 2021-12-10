@@ -117,7 +117,7 @@ export function generateWaveform(
   for (let x = position; x < waveform.length; x += 1) {
     const val = channel.max_sample(x);
     ctx.rect(
-      x - position,
+      x - position + 0.5,
       scaleY(val, canvas.height),
       0,
       canvas.height - scaleY(val, canvas.height) * 2
