@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from "react";
 import { getVariableStyle } from "./utils";
 import { convertRemToPixels } from "./utils";
+import { WaveFormDataObject } from "../types/types";
+import WaveformData from "waveform-data";
 
 const remScale = 1;
 const textSize = remScale / 1.45; //this is what it will be in rem.
@@ -34,11 +36,11 @@ export function populateCanvas(
 
   const pxSpacing: number = remSpacing * remToPx;
   let count = 0;
+  ctx.beginPath();
   for (let i = 0; i < canvas.width; i += pxSpacing / 4) {
     if (trackLane) {
       ctx.moveTo(i + 0.5, 0);
       ctx.lineTo(i + 0.5, height);
-      console.log("in tracklane", i);
     } else if (count % 4 === 0) {
       ctx.moveTo(i + 0.5, 0);
       ctx.lineTo(i + 0.5, height);
@@ -49,7 +51,6 @@ export function populateCanvas(
     }
     count += 1;
   }
-  console.log("about to stroke");
   ctx.stroke();
 }
 
@@ -78,7 +79,7 @@ export function useUseEffect(
   canvasRef: React.RefObject<HTMLCanvasElement>,
   parentRef: React.RefObject<HTMLDivElement>,
   trackLane?: boolean
-) {
+): void {
   useEffect(function () {
     const canvas = canvasRef.current as HTMLCanvasElement;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -92,4 +93,42 @@ export function useUseEffect(
       );
     };
   }, []);
+}
+
+//draw waveform to canvas
+export function generateWaveform(
+  canvasRef: React.RefObject<HTMLCanvasElement>,
+  parentRef: React.RefObject<HTMLDivElement>,
+  waveform: WaveformData,
+  zoomLevel: number = 128,
+  position: number = 0
+) {
+  const canvas = canvasRef.current as HTMLCanvasElement;
+  canvas.height = parentRef.current?.offsetHeight as number;
+  canvas.width = 2000;
+
+  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+  ctx.strokeStyle = "#164664";
+  ctx.fillStyle = "rgb(86,167,219)";
+  ctx.fillRect(0, 0, waveform.length, canvas.height);
+  const channel = waveform.channel(0);
+  ctx.beginPath();
+
+  for (let x = position; x < waveform.length; x += 1) {
+    const val = channel.max_sample(x);
+    ctx.rect(
+      x - position,
+      scaleY(val, canvas.height),
+      0,
+      canvas.height - scaleY(val, canvas.height) * 2
+    );
+  }
+
+  ctx.stroke();
+}
+
+function scaleY(amplitude: number, height: number): number {
+  const range = 256;
+  const offset = 128;
+  return height - ((amplitude + offset) * height) / range;
 }

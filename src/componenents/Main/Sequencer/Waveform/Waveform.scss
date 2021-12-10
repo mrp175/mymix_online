@@ -1,9 +1,9 @@
 .Waveform {
-  position: absolute;
+  height: 100%;
   z-index: 999;
-  left: 0;
-  top: 0;
+  position: relative;
 
   &__canvas {
+    border-radius: 0.25rem;
   }
 }

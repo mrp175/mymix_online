@@ -4,7 +4,12 @@
   border-top: 1px solid var(--light-main);
   border-bottom: 1px solid var(--light-main);
   width: calc(100vw - 19.1rem);
+  position: relative;
+  padding: 0.25rem 0;
 
   &__canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
   }
 }
