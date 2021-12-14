@@ -75,5 +75,10 @@ function handleMouseUp(e: MouseEvent): void {
 }
 
 function findNearestBar(waveformPositionX: number, spacing: number): number {
-  return Math.floor((waveformPositionX + spacing / 2) / spacing) * spacing;
+  const nearestBar =
+    Math.floor((waveformPositionX + spacing / 2) / spacing) * spacing;
+  if (nearestBar < 0) {
+    return 0;
+  }
+  return nearestBar;
 }
