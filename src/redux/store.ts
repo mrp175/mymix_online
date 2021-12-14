@@ -1,9 +1,9 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
-import waveformPositionReducer from "./waveformPositionReducer";
+import { configureStore } from "@reduxjs/toolkit";
+import waveformStateReducer from "./slices/waveformStateSlice";
 
 export const store = configureStore({
   reducer: {
-    waveformPosition: waveformPositionReducer,
+    waveformState: waveformStateReducer,
   },
 });
 
