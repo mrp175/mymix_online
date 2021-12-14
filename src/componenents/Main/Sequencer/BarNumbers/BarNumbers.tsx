@@ -1,9 +1,16 @@
+import { useEffect } from "react";
 import "./BarNumbers.scss";
-import { useCreateRefs, useUseEffect } from "../../../../utils/canvas";
+import {
+  useCreateRefs,
+  addResizeEventListeners,
+} from "../../../../utils/canvas";
 
 export default function BarNumbers() {
   const [canvasRef, parentRef] = useCreateRefs();
-  useUseEffect(canvasRef, parentRef);
+
+  useEffect(function () {
+    addResizeEventListeners(canvasRef, parentRef);
+  });
 
   return (
     <div className="BarNumbers" ref={parentRef}>

@@ -2,10 +2,7 @@ import { useEffect } from "react";
 import "./Main.scss";
 import "../TrackControl/TrackControl";
 import { useAppDispatch } from "../../redux/hooks";
-import {
-  setPosition,
-  addWaveform,
-} from "../../redux/slices/waveformStateSlice";
+import { addWaveform } from "../../redux/slices/waveformStateSlice";
 import { addId } from "../../redux/slices/waveformIDsSlice";
 import TrackControl from "../TrackControl/TrackControl";
 import BarNumbers from "./Sequencer/BarNumbers/BarNumbers";
@@ -42,16 +39,6 @@ export default function Main() {
           <div className="track-container" id="track-1">
             <TrackLane></TrackLane>
           </div>
-          <input
-            className="mock-position-slider"
-            type="range"
-            min="0"
-            max="500"
-            step="1"
-            onChange={(e) =>
-              dispatch(setPosition({ id: "1", value: +e.target.value }))
-            }
-          ></input>
         </div>
       </div>
     </div>

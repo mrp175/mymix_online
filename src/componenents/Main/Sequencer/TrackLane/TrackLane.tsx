@@ -1,12 +1,19 @@
+import { useEffect } from "react";
 import "./TrackLane.scss";
 import { useAppSelector } from "../../../../redux/hooks";
-import { useCreateRefs, useUseEffect } from "../../../../utils/canvas";
+import {
+  useCreateRefs,
+  addResizeEventListeners,
+} from "../../../../utils/canvas";
 import Waveform from "../Waveform/Waveform";
 
 export default function TrackLane() {
   const [canvasRef, parentRef] = useCreateRefs();
-  useUseEffect(canvasRef, parentRef, true);
   const ids = useAppSelector((state) => state.waveformIDs);
+
+  useEffect(function () {
+    addResizeEventListeners(canvasRef, parentRef, true);
+  });
 
   return (
     <div className="TrackLane" ref={parentRef}>

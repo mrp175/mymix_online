@@ -74,24 +74,22 @@ export function handleResize(
 }
 
 // adds event listener for page resize and calls handleResize to deal with it
-export function useUseEffect(
+export function addResizeEventListeners(
   canvasRef: React.RefObject<HTMLCanvasElement>,
   parentRef: React.RefObject<HTMLDivElement>,
   trackLane?: boolean
-): void {
-  useEffect(function () {
-    const canvas = canvasRef.current as HTMLCanvasElement;
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-    handleResize(canvas, ctx, parentRef, trackLane);
-    window.addEventListener("resize", () =>
+): () => void {
+  const canvas = canvasRef.current as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+  handleResize(canvas, ctx, parentRef, trackLane);
+  window.addEventListener("resize", () =>
+    handleResize(canvas, ctx, parentRef, trackLane)
+  );
+  return function () {
+    window.removeEventListener("resize", () =>
       handleResize(canvas, ctx, parentRef, trackLane)
     );
-    return function () {
-      window.removeEventListener("resize", () =>
-        handleResize(canvas, ctx, parentRef, trackLane)
-      );
-    };
-  }, []);
+  };
 }
 
 //draw waveform to canvas
