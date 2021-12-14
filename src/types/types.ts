@@ -8,4 +8,5 @@ export interface Mouse {
 export interface Waveform {
   startX: number;
   currentPositionX: number;
+  currentBar: number;
 }

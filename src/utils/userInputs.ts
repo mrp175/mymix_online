@@ -4,6 +4,8 @@ import { Mouse, Waveform } from "../types/types";
 import { convertRemToPixels } from "./utils";
 import { barSpacing, scale } from "./canvas";
 
+const spacing: number = barSpacing * scale;
+
 const mouse: Mouse = {
   isDown: false,
   startX: 0,
@@ -14,8 +16,10 @@ const mouse: Mouse = {
 const waveform: Waveform = {
   startX: 0,
   currentPositionX: 0,
+  currentBar: 0,
 };
 
+// Adds event listeners for mousedown, mousemove and mouseup.
 export function handleUserInput(
   canvasRef: React.RefObject<HTMLCanvasElement>,
   parentRef: React.RefObject<HTMLDivElement>,
@@ -57,15 +61,19 @@ function handleMouseMove(e: MouseEvent, dispatch: any): void {
   if (mouse.isDown) {
     mouse.distanceTravelled = e.clientX - mouse.startX;
     waveform.currentPositionX = waveform.startX + mouse.distanceTravelled;
-    console.log("moving", mouse.distanceTravelled);
-    dispatch(setPosition({ id: "1", value: waveform.currentPositionX }));
+    waveform.currentBar = findNearestBar(waveform.currentPositionX, spacing);
+    dispatch(setPosition({ id: "1", value: waveform.currentBar }));
   }
 }
 
 function handleMouseUp(e: MouseEvent): void {
   if (mouse.isDown) {
     mouse.isDown = false;
-    waveform.startX = waveform.currentPositionX;
+    waveform.startX = waveform.currentBar;
     console.log("mouse up");
   }
+}
+
+function findNearestBar(waveformPositionX: number, spacing: number): number {
+  return Math.floor((waveformPositionX + spacing / 2) / spacing) * spacing;
 }
