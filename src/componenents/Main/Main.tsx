@@ -1,23 +1,33 @@
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import "./Main.scss";
 import "../TrackControl/TrackControl";
+import { useAppDispatch } from "../../redux/hooks";
+import {
+  setPosition,
+  addWaveform,
+} from "../../redux/slices/waveformStateSlice";
+import { addId } from "../../redux/slices/waveformIDsSlice";
 import TrackControl from "../TrackControl/TrackControl";
 import BarNumbers from "./Sequencer/BarNumbers/BarNumbers";
 import TrackLane from "./Sequencer/TrackLane/TrackLane";
-import { goToPosition } from "../../redux/waveformPositionReducer";
 
 export default function Main() {
-  const { position } = useSelector((state: any) => state.waveformPosition);
-  console.log(position);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  // useEffect(
-  //   function () {
-  //     console.log(position);
-  //   },
-  //   [position]
-  // );
+  useEffect(function () {
+    dispatch(
+      addWaveform({
+        id: "1",
+        startPosition: 0,
+      })
+    );
+
+    dispatch(
+      addId({
+        id: "1",
+      })
+    );
+  }, []);
 
   return (
     <div className="Main">
@@ -38,7 +48,9 @@ export default function Main() {
             min="0"
             max="500"
             step="1"
-            onChange={(e) => dispatch(goToPosition(e.target.value))}
+            onChange={(e) =>
+              dispatch(setPosition({ id: "1", value: +e.target.value }))
+            }
           ></input>
         </div>
       </div>

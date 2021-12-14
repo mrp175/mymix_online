@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import waveformStateReducer from "./slices/waveformStateSlice";
+import waveformIDsReducer from "./slices/waveformIDsSlice";
 
 export const store = configureStore({
   reducer: {
-    waveformState: waveformStateReducer,
+    waveformStates: waveformStateReducer,
+    waveformIDs: waveformIDsReducer,
   },
 });
 

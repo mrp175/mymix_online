@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
-interface WaveformState {
+export interface WaveformState {
   position: number;
   startOffset: number;
   gain: number;
@@ -15,15 +16,20 @@ interface SetState {
   value: number;
 }
 
+interface AddWaveform {
+  id: string;
+  startPosition: number;
+}
+
 const initialState: WaveformStates = {};
 
 export const waveformStatesSlice = createSlice({
   name: "waveform position",
   initialState,
   reducers: {
-    addWaveform: (state, action: PayloadAction<SetState>) => {
+    addWaveform: (state, action: PayloadAction<AddWaveform>) => {
       state[action.payload.id] = {
-        position: action.payload.value,
+        position: action.payload.startPosition,
         startOffset: 0,
         gain: 0,
       };
@@ -43,5 +49,7 @@ export const waveformStatesSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { addWaveform, setPosition, setStartOffset, setGain } =
   waveformStatesSlice.actions;
+
+export const waveformStates = (state: RootState) => state.waveformStates;
 
 export default waveformStatesSlice.reducer;

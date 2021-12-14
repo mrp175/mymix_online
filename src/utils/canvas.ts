@@ -1,13 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import { getVariableStyle } from "./utils";
 import { convertRemToPixels } from "./utils";
-import { WaveFormDataObject } from "../types/types";
 import WaveformData from "waveform-data";
 
 const remScale = 1;
 const textSize = remScale / 1.45; //this is what it will be in rem.
-const barSpacing = 7; // This should scale with zoom.
-const scale = convertRemToPixels(remScale);
+export const barSpacing = 7; // This should scale with zoom.
+export const scale = convertRemToPixels(remScale);
 
 // Create refs
 export function useCreateRefs(): [
