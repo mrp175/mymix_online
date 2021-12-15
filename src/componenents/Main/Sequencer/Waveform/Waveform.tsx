@@ -5,11 +5,13 @@ import { useCreateRefs, generateWaveform } from "../../../../utils/canvas";
 import { loadAudioFile } from "../../../../utils/loadAudioFile";
 import WaveformData from "waveform-data";
 import { handleUserInput } from "../../../../utils/userInputs";
+import { setZoomLevel } from "../../../../redux/slices/zoomLevelSlice";
 
 export default function Waveform({ id }: { id: string }) {
   const [canvasRef, parentRef] = useCreateRefs();
   const [waveform, setWaveform] = useState<WaveformData | null>(null);
   const { position } = useAppSelector((state) => state.waveformStates["1"]);
+  const { zoomLevel } = useAppSelector((state) => state.zoomLevel);
   const dispatch = useAppDispatch();
 
   useEffect(function () {
@@ -20,10 +22,10 @@ export default function Waveform({ id }: { id: string }) {
   useEffect(
     function () {
       if (waveform) {
-        generateWaveform(canvasRef, parentRef, waveform);
+        generateWaveform(canvasRef, parentRef, waveform, zoomLevel);
       }
     },
-    [waveform]
+    [waveform, zoomLevel]
   );
 
   useEffect(

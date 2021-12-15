@@ -1,0 +1,13 @@
+.BottomSection {
+  height: 3rem;
+  background: var(--light-main);
+  border-top: 1px solid var(--light-main);
+  display: grid;
+  grid-template-columns: 18rem auto;
+  grid-gap: 1px;
+
+  & > div {
+    background: var(--dark-alt);
+    height: 3rem;
+  }
+}

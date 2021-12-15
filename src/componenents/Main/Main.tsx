@@ -3,7 +3,7 @@ import "./Main.scss";
 import "../TrackControl/TrackControl";
 import { useAppDispatch } from "../../redux/hooks";
 import { addWaveform } from "../../redux/slices/waveformStateSlice";
-import { addId } from "../../redux/slices/waveformIDsSlice";
+import { addId } from "../../redux/slices/waveformIdsSlice";
 import TrackControl from "../TrackControl/TrackControl";
 import BarNumbers from "./Sequencer/BarNumbers/BarNumbers";
 import TrackLane from "./Sequencer/TrackLane/TrackLane";

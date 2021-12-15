@@ -9,7 +9,7 @@ import Waveform from "../Waveform/Waveform";
 
 export default function TrackLane() {
   const [canvasRef, parentRef] = useCreateRefs();
-  const ids = useAppSelector((state) => state.waveformIDs);
+  const ids = useAppSelector((state) => state.waveformIds);
 
   useEffect(function () {
     addResizeEventListeners(canvasRef, parentRef, true);

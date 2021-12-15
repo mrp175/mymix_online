@@ -100,6 +100,7 @@ export function generateWaveform(
   zoomLevel: number = 128,
   position: number = 0
 ) {
+  waveform = waveform.resample({ scale: zoomLevel });
   const canvas = canvasRef.current as HTMLCanvasElement;
   canvas.height = parentRef.current?.offsetHeight as number;
   canvas.width = 2000;

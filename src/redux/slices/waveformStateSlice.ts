@@ -24,7 +24,7 @@ interface AddWaveform {
 const initialState: WaveformStates = {};
 
 export const waveformStatesSlice = createSlice({
-  name: "waveform position",
+  name: "Waveform States",
   initialState,
   reducers: {
     addWaveform: (state, action: PayloadAction<AddWaveform>) => {

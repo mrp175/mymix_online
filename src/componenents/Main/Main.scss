@@ -4,7 +4,7 @@
   display: grid;
   grid-template-columns: 18rem auto;
   grid-gap: 1px;
-  height: calc(100% - var(--transport-height));
+  height: calc(100vh - var(--transport-height) - 4rem);
   background: var(--dark-main);
 
   .sidebar {
