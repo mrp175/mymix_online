@@ -11,7 +11,7 @@ export default function ZoomControl() {
         className="zoom-slider"
         type="range"
         min="128"
-        max="10000"
+        max="40000"
         step="1"
         onChange={(e) => dispatch(setZoomLevel(+e.target.value))}
       ></input>

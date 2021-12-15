@@ -30,14 +30,12 @@ export function handleUserInput(
   addGenericEventListener(
     parent as HTMLDivElement,
     "mousedown",
-    (e: MouseEvent) => handleMouseDown(e)
+    handleMouseDown
   );
   addGenericEventListener(window, "mousemove", (e: MouseEvent) =>
     handleMouseMove(e as MouseEvent, dispatch)
   );
-  addGenericEventListener(window, "mouseup", (e: MouseEvent) =>
-    handleMouseUp(e)
-  );
+  addGenericEventListener(window, "mouseup", handleMouseUp);
 }
 
 function addGenericEventListener(
@@ -52,6 +50,7 @@ function addGenericEventListener(
 }
 
 function handleMouseDown(e: MouseEvent): void {
+  e.preventDefault();
   mouse.isDown = true;
   mouse.startX = e.clientX;
   console.log("mouse start X", e.clientX);

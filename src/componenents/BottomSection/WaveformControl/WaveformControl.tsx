@@ -1,5 +1,14 @@
 import "./WaveformControl.scss";
+import Dial from "../../Dial/Dial";
 
 export default function WaveformControl() {
-  return <div>WaveformControl</div>;
+  return (
+    <div>
+      <Dial />
+    </div>
+  );
 }
+
+// root bpm
+// gain / volume
+// start offset

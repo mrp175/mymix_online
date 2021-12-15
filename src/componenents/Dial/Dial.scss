@@ -1,0 +1,22 @@
+.Dial {
+  height: 2.5rem;
+  width: 2.5rem;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+
+  &__knob {
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    background: white;
+    display: grid;
+    justify-items: center;
+
+    &__line {
+      height: 1rem;
+      width: 0rem;
+      border: 1px solid black;
+    }
+  }
+}
