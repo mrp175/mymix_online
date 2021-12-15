@@ -53,7 +53,6 @@ function handleMouseDown(e: MouseEvent): void {
   e.preventDefault();
   mouse.isDown = true;
   mouse.startX = e.clientX;
-  console.log("mouse start X", e.clientX);
 }
 
 function handleMouseMove(e: MouseEvent, dispatch: any): void {
@@ -69,7 +68,6 @@ function handleMouseUp(e: MouseEvent): void {
   if (mouse.isDown) {
     mouse.isDown = false;
     waveform.startX = waveform.currentBar;
-    console.log("mouse up");
   }
 }
 

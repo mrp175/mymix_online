@@ -5,7 +5,7 @@ import {
   useCreateRefs,
   addResizeEventListeners,
 } from "../../../../utils/canvas";
-import Waveform from "../Waveform/Waveform";
+import Waveform from "../../../Waveform/Waveform";
 
 export default function TrackLane() {
   const [canvasRef, parentRef] = useCreateRefs();

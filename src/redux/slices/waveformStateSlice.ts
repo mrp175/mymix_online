@@ -31,7 +31,7 @@ export const waveformStatesSlice = createSlice({
       state[action.payload.id] = {
         position: action.payload.startPosition,
         startOffset: 0,
-        gain: 0,
+        gain: 1,
       };
     },
     setPosition: (state, action: PayloadAction<SetState>) => {

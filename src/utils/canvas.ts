@@ -98,7 +98,8 @@ export function generateWaveform(
   parentRef: React.RefObject<HTMLDivElement>,
   waveform: WaveformData,
   zoomLevel: number = 128,
-  position: number = 0
+  startOffset: number = 0,
+  gain: number = 1
 ) {
   waveform = waveform.resample({ scale: zoomLevel });
   const canvas = canvasRef.current as HTMLCanvasElement;
@@ -112,21 +113,21 @@ export function generateWaveform(
   const channel = waveform.channel(0);
   ctx.beginPath();
 
-  for (let x = position; x < waveform.length; x += 1) {
+  for (let x = startOffset; x < 500; x += 1) {
     const val = channel.max_sample(x);
     ctx.rect(
-      x - position + 0.5,
-      scaleY(val, canvas.height),
+      x - startOffset + 0.5,
+      scaleY(val, canvas.height, gain),
       0,
-      canvas.height - scaleY(val, canvas.height) * 2
+      canvas.height - scaleY(val, canvas.height, gain) * 2
     );
   }
 
   ctx.stroke();
 }
 
-function scaleY(amplitude: number, height: number): number {
+function scaleY(amplitude: number, height: number, gain: number): number {
   const range = 256;
   const offset = 128;
-  return height - ((amplitude + offset) * height) / range;
+  return height - ((amplitude * gain + offset) * height) / range;
 }
