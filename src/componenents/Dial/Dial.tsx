@@ -1,57 +1,97 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import "./Dial.scss";
-import { MouseY } from "../../types/types";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setGain } from "../../redux/slices/waveformStateSlice";
 import { AppDispatch } from "../../redux/store";
+import { MouseInput } from "../../utils/handleMouseInput";
+import { NewMouseState, MouseState } from "../../types/types";
+import { handleBoundaries } from "../../utils/dial";
+import { initializeDialPos } from "../../utils/dial";
+import {
+  amplitudeToDecibels,
+  decibelsToAmplitude,
+  handleRangeBias,
+  mapNumberRange,
+} from "../../utils/utils";
+import { DialState } from "../../utils/dial";
+import { DialType } from "../../types/types";
+import { addGenericEventListener } from "../../utils/waveformPositioning";
 
-const mouse: MouseY = {
-  isDown: false,
-  startY: 0,
-  distancedTravelled: 0,
-};
-
-function handleMouseDown(e: MouseEvent): void {
-  e.preventDefault();
-  mouse.isDown = true;
-  mouse.startY = e.clientY;
-}
-
-function handleMouseMove(
-  e: MouseEvent,
-  ref: HTMLDivElement,
-  dispatch: AppDispatch
-): void {
-  if (mouse.isDown) {
-    mouse.distancedTravelled = mouse.startY - e.clientY;
-    ref.style.transform = `rotate(${mouse.distancedTravelled}deg)`;
-    dispatch(setGain({ id: "1", value: mouse.distancedTravelled / 200 }));
-  }
-}
-
-function handleMouseUp() {
-  mouse.isDown = false;
-}
-
-export default function Dial() {
+export default function Dial({
+  min,
+  max,
+  step,
+  init,
+  log,
+  logType,
+  dbType,
+  waveformId,
+}: DialType) {
   const dispatch: AppDispatch = useAppDispatch();
   const knobRef = useRef<HTMLDivElement>(null);
+  const [dialPos, setDialPos] = useState<number>(0);
+  const mouse = new MouseInput();
+  const initDialVal = initializeDialPos(init, min, max);
+  const dial = new DialState(initDialVal);
+
+  function mapMouseToDial(mouse: MouseState) {
+    const change = mouse.x.distanceTravelled * 2;
+    console.log(mouse.x);
+    let valueInDeg = dial.start + change;
+    if (valueInDeg > 130) valueInDeg = 130;
+    if (valueInDeg < -130) valueInDeg = -130;
+    return valueInDeg;
+  }
+
+  function handleMouseMove(
+    mouse: MouseState,
+    ref: HTMLDivElement | undefined
+  ): void {
+    let state = 0;
+    if (mouse.isDown) {
+      setDialPos((s): number => {
+        state = s;
+        return mapMouseToDial(mouse);
+      });
+    }
+  }
+
+  function handleMouseUp(
+    mouse: MouseState,
+    ref: HTMLDivElement | undefined
+  ): void {
+    if (mouse.isDown) {
+      setDialPos((s): number => {
+        dial.start = s;
+        return s;
+      });
+    }
+  }
 
   useEffect(function () {
-    const knob = knobRef.current as HTMLDivElement;
-    knob.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("mousemove", (e) =>
-      handleMouseMove(e, knob, dispatch)
-    );
-    window.addEventListener("mouseup", handleMouseUp);
-    return function () {
-      knob.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("mousemove", (e) =>
-        handleMouseMove(e, knob, dispatch)
+    setDialPos(dial.value);
+    const knob = knobRef.current;
+    if (knob) {
+      addGenericEventListener(knob, "mousedown", (e: MouseEvent) =>
+        mouse.handleDown(e, knob)
       );
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
+      addGenericEventListener(window, "mousemove", (e: MouseEvent) => {
+        mouse.handleMove(e, knob, handleMouseMove);
+      });
+      addGenericEventListener(window, "mouseup", (e: MouseEvent) =>
+        mouse.handleUp(e, knob, handleMouseUp)
+      );
+    }
   }, []);
+
+  useEffect(
+    function () {
+      if (knobRef.current) {
+        knobRef.current.style.transform = `rotate(${dialPos}deg)`;
+      }
+    },
+    [dialPos]
+  );
 
   return (
     <div className="Dial">
@@ -61,3 +101,13 @@ export default function Dial() {
     </div>
   );
 }
+
+// function moveKnob(mouse: MouseState, knobRef) {
+//   currentValue = startingValue + mouse.y.distanceTravelled ;
+//   if (currentValue < min) currentValue = min;
+//   if (currentValue > max) currentValue = max;
+//   currentValue = Math.floor(currentValue / step) * step;
+//   currentValue = mapNumberRange(currentValue, min, max, 0, 1);
+//   currentValue = handleRangeBias(currentValue, log, logType) as number;
+//   // if (dbType === "db") currentValue = amplitudeToDecibels(currentValue);
+// }

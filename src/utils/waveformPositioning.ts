@@ -1,12 +1,13 @@
 import React from "react";
 import { setPosition } from "../redux/slices/waveformStateSlice";
-import { Mouse, Waveform } from "../types/types";
+import { MouseX, Waveform } from "../types/types";
 import { convertRemToPixels } from "./utils";
 import { barSpacing, scale } from "./canvas";
+import { AppDispatch } from "../redux/store";
 
 const spacing: number = barSpacing * scale;
 
-const mouse: Mouse = {
+const mouse: MouseX = {
   isDown: false,
   startX: 0,
   endX: 0,
@@ -24,7 +25,7 @@ export function handleUserInput(
   canvasRef: React.RefObject<HTMLCanvasElement>,
   parentRef: React.RefObject<HTMLDivElement>,
   id: string,
-  dispatch: any
+  dispatch: AppDispatch
 ): void {
   const parent = parentRef.current;
   addGenericEventListener(
@@ -33,19 +34,22 @@ export function handleUserInput(
     handleMouseDown
   );
   addGenericEventListener(window, "mousemove", (e: MouseEvent) =>
-    handleMouseMove(e as MouseEvent, dispatch)
+    handleMouseMove(e, dispatch, parent as HTMLDivElement)
   );
-  addGenericEventListener(window, "mouseup", handleMouseUp);
+  addGenericEventListener(window, "mouseup", (e: MouseEvent) =>
+    handleMouseUp(e, parent as HTMLDivElement)
+  );
 }
 
-function addGenericEventListener(
+export function addGenericEventListener(
   ref: HTMLDivElement | (Window & typeof globalThis),
   type: string,
-  callback: any //Fix this once you figure out why it doesn't allow (e: MouseEvent) => void as a type here. It's is convinced it is an EventListenerOrEventListenerObject which is not compatible with MouseEvent
+  callback: any, //Fix this once you figure out why it doesn't allow (e: MouseEvent) => void as a type here. It's is convinced it is an EventListenerOrEventListenerObject which is not compatible with MouseEvent
+  state?: number
 ): () => void {
-  ref.addEventListener(type, callback);
+  ref.addEventListener(type, (state) => callback(state));
   return function () {
-    ref.removeEventListener(type, callback);
+    ref.removeEventListener(type, (state) => callback(state));
   };
 }
 
@@ -55,19 +59,25 @@ function handleMouseDown(e: MouseEvent): void {
   mouse.startX = e.clientX;
 }
 
-function handleMouseMove(e: MouseEvent, dispatch: any): void {
+function handleMouseMove(
+  e: MouseEvent,
+  dispatch: AppDispatch,
+  parentDiv: HTMLDivElement
+): void {
   if (mouse.isDown) {
     mouse.distanceTravelled = e.clientX - mouse.startX;
     waveform.currentPositionX = waveform.startX + mouse.distanceTravelled;
     waveform.currentBar = findNearestBar(waveform.currentPositionX, spacing);
     dispatch(setPosition({ id: "1", value: waveform.currentBar }));
+    parentDiv.style.opacity = "0.6";
   }
 }
 
-function handleMouseUp(e: MouseEvent): void {
+function handleMouseUp(e: MouseEvent, parentDiv: HTMLDivElement): void {
   if (mouse.isDown) {
     mouse.isDown = false;
     waveform.startX = waveform.currentBar;
+    parentDiv.style.opacity = "1";
   }
 }
 

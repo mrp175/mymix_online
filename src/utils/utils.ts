@@ -14,3 +14,27 @@ export function amplitudeToDecibels(amplitude: number): number {
 export function decibelsToAmplitude(decibels: number): number {
   return Math.pow(10, decibels / 20);
 }
+
+export function handleRangeBias(x: number, bias: number, type: "exp" | "log") {
+  if ((type = "exp")) {
+    x = 1 - x;
+    let k = Math.pow(1 - bias, 3);
+    k = (x * k) / (x * k - x + 1);
+    return 1 - k;
+  }
+  if ((type = "log")) {
+    let k = Math.pow(1 - bias, 3);
+    k = (x * k) / (x * k - x + 1);
+    return k;
+  }
+}
+
+export function mapNumberRange(
+  val: number,
+  in_min: number,
+  in_max: number,
+  out_min: number,
+  out_max: number
+) {
+  return ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+}

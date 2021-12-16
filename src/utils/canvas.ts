@@ -108,22 +108,28 @@ export function generateWaveform(
 
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   ctx.strokeStyle = "#164664";
+  ctx.lineWidth = 1;
   ctx.fillStyle = "rgb(86,167,219)";
   ctx.fillRect(0, 0, waveform.length, canvas.height);
+  ctx.fillStyle = "#164664";
   const channel = waveform.channel(0);
   ctx.beginPath();
 
-  for (let x = startOffset; x < 500; x += 1) {
+  let length = 2000;
+  if (length > waveform.length) length = waveform.length;
+
+  for (let x = startOffset; x < length; x += 2) {
     const val = channel.max_sample(x);
     ctx.rect(
       x - startOffset + 0.5,
       scaleY(val, canvas.height, gain),
-      0,
+      2,
       canvas.height - scaleY(val, canvas.height, gain) * 2
     );
   }
 
   ctx.stroke();
+  ctx.fill();
 }
 
 function scaleY(amplitude: number, height: number, gain: number): number {

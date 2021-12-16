@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useCreateRefs, generateWaveform } from "../../utils/canvas";
 import { loadAudioFile } from "../../utils/loadAudioFile";
 import WaveformData from "waveform-data";
-import { handleUserInput } from "../../utils/userInputs";
+import { handleUserInput } from "../../utils/waveformPositioning";
 
 export default function Waveform({ id }: { id: string }) {
   const [canvasRef, parentRef] = useCreateRefs();
