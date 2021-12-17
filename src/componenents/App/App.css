@@ -1,4 +1,5 @@
 .App {
   background: var(--dark-main);
   width: 100vw;
+  overflow: hidden;
 }

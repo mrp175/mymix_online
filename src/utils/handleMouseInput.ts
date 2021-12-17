@@ -7,7 +7,6 @@ const handleMouseDown: HandleMouseInput = function (
   callback?
 ): void {
   e.preventDefault();
-  console.log("mousedown");
   this.mouse.isDown = true;
   this.mouse.y.start = e.clientY;
   this.mouse.x.start = e.clientX;
@@ -22,7 +21,6 @@ const handleMouseMove: HandleMouseInput = function (
   parentRef?,
   callback?
 ): void {
-  // e.preventDefault();
   if (this.mouse.isDown) {
     this.mouse.x.distanceTravelled = e.clientX - this.mouse.x.start;
     this.mouse.y.distanceTravelled = this.mouse.y.start - e.clientY;
@@ -39,7 +37,6 @@ const handleMouseUp: HandleMouseInput = function (
   callback?
 ) {
   if (this.mouse.isDown) {
-    // e.preventDefault();
     this.mouse.x.end = e.clientX;
     this.mouse.y.end = e.clientY;
     if (callback) {

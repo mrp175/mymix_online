@@ -15,7 +15,12 @@ export default function WaveformControl() {
         dbType="linear"
         waveformId="1"
       />
-      <RangeSlider />
+      <RangeSlider
+        style={{ mainAxisLength: 10, crossAxisLength: 1 }}
+        min={0}
+        max={100}
+        init={75}
+      />
     </div>
   );
 }

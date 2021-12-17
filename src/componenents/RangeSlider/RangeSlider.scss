@@ -4,15 +4,13 @@
 }
 
 .RangeSlider {
-  height: var(--range-slider-height);
-  width: var(--range-slider-width);
   background: var(--dark-main);
   overflow: hidden;
   border-radius: 1rem;
 
   &__handle {
-    height: var(--range-slider-height);
-    width: var(--range-slider-width);
+    height: 100%;
+    width: 100%;
     background: #00c37d;
     position: relative;
     border-radius: 1rem;

@@ -73,3 +73,15 @@ export interface DialType {
   dbType: "db" | "linear";
   waveformId: string;
 }
+
+export interface RangeSlider {
+  min: number;
+  max: number;
+  init: number;
+  style: {
+    direction: "vertical" | "horizontal";
+    type: "volume" | "zoom";
+    mainAxisLength: number;
+    crossAxisLength: number;
+  };
+}
