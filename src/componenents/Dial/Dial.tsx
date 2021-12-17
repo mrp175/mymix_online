@@ -36,7 +36,6 @@ export default function Dial({
 
   function mapMouseToDial(mouse: MouseState) {
     const change = mouse.x.distanceTravelled * 2;
-    console.log(mouse.x);
     let valueInDeg = dial.start + change;
     if (valueInDeg > 130) valueInDeg = 130;
     if (valueInDeg < -130) valueInDeg = -130;

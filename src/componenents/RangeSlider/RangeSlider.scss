@@ -1,0 +1,31 @@
+:root {
+  --range-slider-width: 10rem;
+  --range-slider-height: 1rem;
+}
+
+.RangeSlider {
+  height: var(--range-slider-height);
+  width: var(--range-slider-width);
+  background: var(--dark-main);
+  overflow: hidden;
+  border-radius: 1rem;
+
+  &__handle {
+    height: var(--range-slider-height);
+    width: var(--range-slider-width);
+    background: #00c37d;
+    position: relative;
+    border-radius: 1rem;
+
+    &__knub {
+      height: var(--range-slider-height);
+      width: var(--range-slider-height);
+      border-radius: 50%;
+      background: white;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 999;
+    }
+  }
+}

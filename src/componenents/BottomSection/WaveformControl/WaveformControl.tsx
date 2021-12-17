@@ -1,9 +1,10 @@
 import "./WaveformControl.scss";
 import Dial from "../../Dial/Dial";
+import RangeSlider from "../../RangeSlider/RangeSlider";
 
 export default function WaveformControl() {
   return (
-    <div>
+    <div className="WaveformControl">
       <Dial
         min={0}
         max={100}
@@ -14,6 +15,7 @@ export default function WaveformControl() {
         dbType="linear"
         waveformId="1"
       />
+      <RangeSlider />
     </div>
   );
 }

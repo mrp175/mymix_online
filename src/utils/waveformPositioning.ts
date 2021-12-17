@@ -44,12 +44,11 @@ export function handleUserInput(
 export function addGenericEventListener(
   ref: HTMLDivElement | (Window & typeof globalThis),
   type: string,
-  callback: any, //Fix this once you figure out why it doesn't allow (e: MouseEvent) => void as a type here. It's is convinced it is an EventListenerOrEventListenerObject which is not compatible with MouseEvent
-  state?: number
+  callback: any //Fix this once you figure out why it doesn't allow (e: MouseEvent) => void as a type here. It's is convinced it is an EventListenerOrEventListenerObject which is not compatible with MouseEvent
 ): () => void {
-  ref.addEventListener(type, (state) => callback(state));
+  ref.addEventListener(type, callback);
   return function () {
-    ref.removeEventListener(type, (state) => callback(state));
+    ref.removeEventListener(type, callback);
   };
 }
 
