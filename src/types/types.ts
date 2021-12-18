@@ -79,9 +79,9 @@ export interface RangeSlider {
   max: number;
   init: number;
   style: {
-    direction: "vertical" | "horizontal";
-    type: "volume" | "zoom";
+    // direction: "vertical" | "horizontal";
     mainAxisLength: number;
     crossAxisLength: number;
   };
+  onChange: (val: number) => void;
 }

@@ -1,3 +1,5 @@
+import { useRef, useState } from "react";
+
 export function convertRemToPixels(rem: number): number {
   return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
@@ -22,13 +24,13 @@ export function decibelsToAmplitude(decibels: number): number {
 }
 
 export function handleRangeBias(x: number, bias: number, type: "exp" | "log") {
-  if ((type = "exp")) {
+  if (type === "exp") {
     x = 1 - x;
     let k = Math.pow(1 - bias, 3);
     k = (x * k) / (x * k - x + 1);
     return 1 - k;
   }
-  if ((type = "log")) {
+  if (type === "log") {
     let k = Math.pow(1 - bias, 3);
     k = (x * k) / (x * k - x + 1);
     return k;
@@ -43,4 +45,14 @@ export function mapNumberRange(
   out_max: number
 ) {
   return ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+}
+
+export function useCreateNullRefs(refNames: string[]): {
+  [key: string]: React.MutableRefObject<null>;
+} {
+  let refs: { [key: string]: React.MutableRefObject<null> } = {};
+  for (let i = 0; i < refNames.length; i += 1) {
+    refs[`${refNames[i]}`] = useRef(null);
+  }
+  return refs;
 }

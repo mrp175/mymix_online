@@ -1,8 +1,9 @@
 import "./WaveformControl.scss";
 import Dial from "../../Dial/Dial";
-import RangeSlider from "../../RangeSlider/RangeSlider";
+import VolumeSlider from "../../VolumeSlider/VolumeSlider";
 
 export default function WaveformControl() {
+  function changeVolume(): void {}
   return (
     <div className="WaveformControl">
       <Dial
@@ -15,11 +16,12 @@ export default function WaveformControl() {
         dbType="linear"
         waveformId="1"
       />
-      <RangeSlider
+      <VolumeSlider
         style={{ mainAxisLength: 10, crossAxisLength: 1 }}
-        min={0}
-        max={100}
+        min={200}
+        max={20000}
         init={75}
+        onChange={changeVolume}
       />
     </div>
   );

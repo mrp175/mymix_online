@@ -1,0 +1,27 @@
+.ZoomSlider {
+  background: var(--dark-main);
+  overflow: hidden;
+  border-radius: 0.3rem;
+  box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 1);
+
+  &__canvas {
+    left: 0;
+    top: 0;
+  }
+
+  &__container {
+    position: relative;
+
+    &__knub {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+}
+
+.knub__top {
+  height: 50%;
+  width: 100%;
+  background: white;
+}
