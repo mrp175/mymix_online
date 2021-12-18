@@ -10,7 +10,7 @@ export default function WaveformControl() {
         min={0}
         max={100}
         step={1}
-        init={75}
+        init={50}
         log={0}
         logType="log"
         dbType="linear"

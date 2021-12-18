@@ -94,8 +94,12 @@ export default function Dial({
 
   return (
     <div className="Dial">
-      <div className="Dial__knob" ref={knobRef}>
-        <div className="Dial__knob__line"></div>
+      <div className="Dial__knob">
+        <div className="Dial__knob__background"></div>
+        <div className="Dial__knob__highlight"></div>
+        <div className="Dial__knob__line__container" ref={knobRef}>
+          <div className="Dial__knob__line"></div>
+        </div>
       </div>
     </div>
   );

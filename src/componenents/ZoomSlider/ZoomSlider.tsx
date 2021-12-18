@@ -63,7 +63,7 @@ export default function ZoomSlider({
 
     applyStyles(parent, knub, canvas, container, knubBottom, knubSize, 0.5);
 
-    drawToCanvas(canvas, 0.06);
+    drawToCanvas(canvas, 0.04);
 
     setValueToPos(
       knub,
