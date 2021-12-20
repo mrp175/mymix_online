@@ -3,6 +3,11 @@ import { getVariableStyle } from "./utils";
 import { convertRemToPixels } from "./utils";
 import WaveformData from "waveform-data";
 
+export const lineWidth = 1;
+export const font = `$1rem serif`;
+export const strokeStyle = getVariableStyle("--light-main");
+export const fillStyle = "#ffffff";
+
 const remScale = 1;
 const textSize = remScale / 1.45; //this is what it will be in rem.
 export const barSpacing = 7; // This should scale with zoom.
@@ -18,46 +23,35 @@ export function useCreateRefs(): [
   return [canvasRef, parentRef];
 }
 
-// Draws numbers and bar lines to canvas. Used for the bar count at top of sequencer, and the backdrop for each tracklane.
-export function populateCanvas(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  height: number,
-  remSpacing: number,
-  remToPx: number,
-  textSize: number,
-  trackLane?: boolean // if true, doesn't draw numbers or half length lines. For use in a track lane only.
-): void {
-  ctx.lineWidth = 1;
-  ctx.font = `${textSize}rem serif`;
-  ctx.strokeStyle = getVariableStyle("--light-main");
-  ctx.fillStyle = "#ffffff";
+type CtxStringPropName = "strokeStyle" | "font" | "fillStyle";
+type CtxNumberPropName = "lineWidth";
 
-  const pxSpacing: number = remSpacing * remToPx;
-  let count = 0;
-  ctx.beginPath();
-  for (let i = 0; i < canvas.width; i += pxSpacing / 4) {
-    if (trackLane) {
-      ctx.moveTo(i + 0.5, 0);
-      ctx.lineTo(i + 0.5, height);
-    } else if (count % 4 === 0) {
-      ctx.moveTo(i + 0.5, 0);
-      ctx.lineTo(i + 0.5, height);
-      ctx.fillText(count / 4 + 1 + "", i + 4, height / 3);
+export function applyCtxProperties(
+  ctx: CanvasRenderingContext2D,
+  values: { [key: string]: string | number }
+): void {
+  const propertyNames = Object.keys(values);
+  for (let i = 0; i < propertyNames.length; i += 1) {
+    if (typeof values[propertyNames[i]] === "string") {
+      const propName = propertyNames[i] as CtxStringPropName;
+      ctx[propName] = values[propertyNames[i]] as string;
     } else {
-      ctx.moveTo(i + 0.5, height);
-      ctx.lineTo(i + 0.5, height - height / 4);
+      const propName = propertyNames[i] as CtxNumberPropName;
+      ctx[propName] = values[propertyNames[i]] as number;
     }
-    count += 1;
   }
-  ctx.stroke();
 }
 
+const canvas = document.createElement("canvas");
+const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+
+// Draws numbers and bar lines to canvas. Used for the bar count at top of sequencer, and the backdrop for each tracklane.
 // export function populateCanvas(
 //   canvas: HTMLCanvasElement,
 //   ctx: CanvasRenderingContext2D,
 //   height: number,
-//   spacing: number,
+//   remSpacing: number,
+//   remToPx: number,
 //   textSize: number,
 //   trackLane?: boolean // if true, doesn't draw numbers or half length lines. For use in a track lane only.
 // ): void {
@@ -66,9 +60,10 @@ export function populateCanvas(
 //   ctx.strokeStyle = getVariableStyle("--light-main");
 //   ctx.fillStyle = "#ffffff";
 
+//   const pxSpacing: number = remSpacing * remToPx;
 //   let count = 0;
 //   ctx.beginPath();
-//   for (let i = 0; i < canvas.width; i += spacing / 4) {
+//   for (let i = 0; i < canvas.width; i += pxSpacing / 4) {
 //     if (trackLane) {
 //       ctx.moveTo(i + 0.5, 0);
 //       ctx.lineTo(i + 0.5, height);
@@ -85,7 +80,27 @@ export function populateCanvas(
 //   ctx.stroke();
 // }
 
-// function bpm() {}
+// draw vertical lin on canvas at specific x position from 0 y value to height value
+export function drawLine(
+  ctx: CanvasRenderingContext2D,
+  xPos: number,
+  height: number
+): void {
+  const x = xPos + 0.5;
+  ctx.moveTo(x, 0);
+  ctx.lineTo(x, height);
+}
+
+// draw text on canvas at specific x and y position
+export function drawText(
+  ctx: CanvasRenderingContext2D,
+  xPos: number,
+  y: number,
+  text: string
+): void {
+  const x = xPos + 0.5;
+  ctx.fillText(text, x, y);
+}
 
 // Handles adjust canvas width and redraws content when screen width changes.
 export function handleResize(
@@ -96,15 +111,7 @@ export function handleResize(
 ): void {
   canvas.height = parentRef.current?.offsetHeight as number;
   canvas.width = parentRef.current?.offsetWidth as number;
-  populateCanvas(
-    canvas,
-    ctx,
-    canvas.height,
-    barSpacing,
-    scale,
-    textSize,
-    trackLane
-  );
+  //need to populate canvas here
 }
 
 // adds event listener for page resize and calls handleResize to deal with it
