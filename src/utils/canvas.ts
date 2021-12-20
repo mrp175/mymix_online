@@ -192,5 +192,5 @@ export function pixelsPerSecond(zoomLevel: number): number {
 }
 
 export function pixelsPerBar(bpm: number, zoomLevel: number): number {
-  return pixelsPerSecond(zoomLevel) * barsPerSecond(bpm);
+  return pixelsPerSecond(zoomLevel) / barsPerSecond(bpm);
 }
