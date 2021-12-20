@@ -9,12 +9,7 @@ import {
   handleMouseUp,
 } from ".././../utils/rangeSlider";
 import { MouseInput } from "../../utils/handleMouseInput";
-import {
-  convertPixelsToRem,
-  handleRangeBias,
-  mapNumberRange,
-  getVariableStyle,
-} from "../../utils/utils";
+import { convertPixelsToRem, getVariableStyle } from "../../utils/utils";
 
 export default function ZoomSlider({
   min,
@@ -27,7 +22,6 @@ export default function ZoomSlider({
   const knubRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const knubBottomRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const [state, setState] = useState({ value: init, lastValue: init });
   const mouse = new MouseInput();
@@ -115,15 +109,12 @@ export default function ZoomSlider({
         0,
         knubSize
       );
-      let mappedValue: number = handleRangeBias(state.value, 0.6, "log")!;
-      mappedValue = mapNumberRange(mappedValue, min, max, 128, 40000);
-      onChange(mappedValue);
+      onChange(state.value);
     },
     [state.value]
   );
 
   const path = "M 0 0 L 7 0 L 7 6 L 4 12 L 3 12 L 0 6 L 0 0";
-  const strokeWidth = "2";
   const viewBox = "0 0 7 12";
 
   return (
@@ -134,8 +125,6 @@ export default function ZoomSlider({
           ref={canvasRef}
         ></canvas>
         <div className="ZoomSlider__container__knub" ref={knubRef}>
-          {/* <div className="knub__top"></div>
-          <div className="knub__bottom" ref={knubBottomRef}></div> */}
           <svg
             className="ZoomSlider__container__knub__svg"
             viewBox={viewBox}
@@ -148,5 +137,3 @@ export default function ZoomSlider({
     </div>
   );
 }
-
-//stroke-width={strokeWidth}
