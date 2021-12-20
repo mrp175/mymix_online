@@ -35,24 +35,24 @@ export default function BarNumbers() {
     let count = 1;
     ctx.beginPath();
     for (let i = 0; i < canvas.width; i += pixels_per_line) {
-      drawLine(ctx, i, 0, canvas.height);
-      drawText(ctx, i + 5, canvas.height / 3, count + "");
+      drawLine(ctx, i + 0.5, 0, canvas.height);
+      drawText(ctx, i + 0.5, canvas.height / 3, count + "");
       const pixelsPerSubdividingLine = pixels_per_line / 4;
       drawLine(
         ctx,
-        i + pixelsPerSubdividingLine,
+        i + pixelsPerSubdividingLine + 0.5,
         canvas.height,
         canvas.height / 1.5
       );
       drawLine(
         ctx,
-        i + pixelsPerSubdividingLine * 2,
+        i + pixelsPerSubdividingLine * 2 + 0.5,
         canvas.height,
         canvas.height / 1.5
       );
       drawLine(
         ctx,
-        i + pixelsPerSubdividingLine * 3,
+        i + pixelsPerSubdividingLine * 3 + 0.5,
         canvas.height,
         canvas.height / 1.5
       );
