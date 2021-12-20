@@ -3,17 +3,23 @@ import "./TrackLane.scss";
 import { useAppSelector } from "../../../../redux/hooks";
 import {
   useCreateRefs,
-  addResizeEventListeners,
+  pixelsPerBar,
+  drawLine,
+  drawText,
+  lineWidth,
+  minimumLineSpacing,
+  font,
+  strokeStyle,
+  fillStyle,
+  applyCtxProperties,
+  setPixelsPerLine,
 } from "../../../../utils/canvas";
 import Waveform from "../../../Waveform/Waveform";
 
 export default function TrackLane() {
   const [canvasRef, parentRef] = useCreateRefs();
   const ids = useAppSelector((state) => state.waveformIds);
-
-  useEffect(function () {
-    addResizeEventListeners(canvasRef, parentRef, true);
-  });
+  const zoomLevel = useAppSelector((state) => state.zoomLevel.zoomLevel);
 
   return (
     <div className="TrackLane" ref={parentRef}>

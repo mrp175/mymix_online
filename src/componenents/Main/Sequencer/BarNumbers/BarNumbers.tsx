@@ -8,24 +8,17 @@ import {
   drawLine,
   drawText,
   lineWidth,
+  minimumLineSpacing,
   font,
   strokeStyle,
   fillStyle,
   applyCtxProperties,
+  setPixelsPerLine,
 } from "../../../../utils/canvas";
 
 export default function BarNumbers() {
   const [canvasRef, parentRef] = useCreateRefs();
   const zoomLevel = useAppSelector((state) => state.zoomLevel.zoomLevel);
-
-  function setPixelsPerLine(pixels_per_bar: number): number {
-    let pixels_per_line = pixels_per_bar;
-    if (pixels_per_line < convertRemToPixels(4)) {
-      pixels_per_line *= 2;
-      return setPixelsPerLine(pixels_per_line);
-    }
-    return pixels_per_line;
-  }
 
   function populateCanvas(
     canvas: HTMLCanvasElement,
@@ -33,14 +26,36 @@ export default function BarNumbers() {
     zoomLevel: number
   ): void {
     const pixels_per_bar = pixelsPerBar(174, zoomLevel);
-    const pixels_per_line = setPixelsPerLine(pixels_per_bar);
+    const pixels_per_line = setPixelsPerLine(
+      pixels_per_bar,
+      minimumLineSpacing
+    );
     const barToLineRatio = pixels_per_line / pixels_per_bar;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     let count = 1;
     ctx.beginPath();
     for (let i = 0; i < canvas.width; i += pixels_per_line) {
-      drawLine(ctx, i, canvas.height);
-      drawText(ctx, i + 5, canvas.height / 2, count + "");
+      drawLine(ctx, i, 0, canvas.height);
+      drawText(ctx, i + 5, canvas.height / 3, count + "");
+      const pixelsPerSubdividingLine = pixels_per_line / 4;
+      drawLine(
+        ctx,
+        i + pixelsPerSubdividingLine,
+        canvas.height,
+        canvas.height / 1.5
+      );
+      drawLine(
+        ctx,
+        i + pixelsPerSubdividingLine * 2,
+        canvas.height,
+        canvas.height / 1.5
+      );
+      drawLine(
+        ctx,
+        i + pixelsPerSubdividingLine * 3,
+        canvas.height,
+        canvas.height / 1.5
+      );
       count += barToLineRatio;
     }
 

@@ -7,6 +7,7 @@ export const lineWidth = 1;
 export const font = `$1rem serif`;
 export const strokeStyle = getVariableStyle("--light-main");
 export const fillStyle = "#ffffff";
+export const minimumLineSpacing = 4;
 
 const remScale = 1;
 const textSize = remScale / 1.45; //this is what it will be in rem.
@@ -84,11 +85,12 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 export function drawLine(
   ctx: CanvasRenderingContext2D,
   xPos: number,
-  height: number
+  startY: number,
+  endY: number
 ): void {
   const x = xPos + 0.5;
-  ctx.moveTo(x, 0);
-  ctx.lineTo(x, height);
+  ctx.moveTo(x, startY);
+  ctx.lineTo(x, endY);
 }
 
 // draw text on canvas at specific x and y position
@@ -100,6 +102,19 @@ export function drawText(
 ): void {
   const x = xPos + 0.5;
   ctx.fillText(text, x, y);
+}
+
+// Recursively checks to see if lines are becoming too close together, then doubles the length between them if it falls below cetain value;
+export function setPixelsPerLine(
+  pixels_per_bar: number,
+  spacingInRem: number
+): number {
+  let pixels_per_line = pixels_per_bar;
+  if (pixels_per_line < convertRemToPixels(spacingInRem)) {
+    pixels_per_line *= 2;
+    return setPixelsPerLine(pixels_per_line, spacingInRem);
+  }
+  return pixels_per_line;
 }
 
 // Handles adjust canvas width and redraws content when screen width changes.
