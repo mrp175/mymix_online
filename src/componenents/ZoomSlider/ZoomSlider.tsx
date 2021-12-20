@@ -13,6 +13,7 @@ import {
   convertPixelsToRem,
   handleRangeBias,
   mapNumberRange,
+  getVariableStyle,
 } from "../../utils/utils";
 
 export default function ZoomSlider({
@@ -27,16 +28,20 @@ export default function ZoomSlider({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const knubBottomRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [state, setState] = useState({ value: init, lastValue: init });
   const mouse = new MouseInput();
   const knubSize = 0.4;
+
+  const accentColor = getVariableStyle("--accent-color");
+  const darkAlt = getVariableStyle("--dark-alt");
 
   function applyStyles(
     parent: HTMLDivElement,
     knub: HTMLDivElement,
     canvas: HTMLCanvasElement,
     container: HTMLDivElement,
-    knubBottom: HTMLDivElement,
+    svg: SVGSVGElement,
     knubSize: number, // rem
     padding: number // rem
   ) {
@@ -45,13 +50,14 @@ export default function ZoomSlider({
     parent.style.height = "100%";
     knub.style.height = style.crossAxisLength * knubSize * 1.5 + "rem";
     knub.style.width = style.crossAxisLength * knubSize + "rem";
-    knubBottom.style.borderLeft = `${knubSize}rem solid transparent`;
-    knubBottom.style.borderRight = `${knubSize}rem solid transparent`;
-    knubBottom.style.borderTop = `${knubSize * 2}rem solid white`;
     container.style.height = "100%";
     container.style.width = "100%";
     canvas.width = container.offsetWidth;
     canvas.height = container.offsetHeight;
+    svg.style.width = style.crossAxisLength * knubSize + "rem";
+    svg.style.fill = accentColor;
+    svg.style.stroke = darkAlt;
+    svg.style.strokeWidth = "1";
   }
 
   useEffect(function () {
@@ -59,9 +65,8 @@ export default function ZoomSlider({
     const knub = knubRef.current!;
     const canvas = canvasRef.current!;
     const container = containerRef.current!;
-    const knubBottom = knubBottomRef.current!;
-
-    applyStyles(parent, knub, canvas, container, knubBottom, knubSize, 0.5);
+    const svg = svgRef.current!;
+    applyStyles(parent, knub, canvas, container, svg, knubSize, 0.5);
 
     drawToCanvas(canvas, 0.04);
 
@@ -117,6 +122,10 @@ export default function ZoomSlider({
     [state.value]
   );
 
+  const path = "M 0 0 L 7 0 L 7 6 L 4 12 L 3 12 L 0 6 L 0 0";
+  const strokeWidth = "2";
+  const viewBox = "0 0 7 12";
+
   return (
     <div className="ZoomSlider" ref={parentRef}>
       <div className="ZoomSlider__container" ref={containerRef}>
@@ -125,10 +134,19 @@ export default function ZoomSlider({
           ref={canvasRef}
         ></canvas>
         <div className="ZoomSlider__container__knub" ref={knubRef}>
-          <div className="knub__top"></div>
-          <div className="knub__bottom" ref={knubBottomRef}></div>
+          {/* <div className="knub__top"></div>
+          <div className="knub__bottom" ref={knubBottomRef}></div> */}
+          <svg
+            className="ZoomSlider__container__knub__svg"
+            viewBox={viewBox}
+            ref={svgRef}
+          >
+            <path d={path} />
+          </svg>
         </div>
       </div>
     </div>
   );
 }
+
+//stroke-width={strokeWidth}

@@ -86,6 +86,7 @@ export function handleMouseUp(
 }
 
 export function drawToCanvas(canvas: HTMLCanvasElement, interval: number) {
+  const accentColor = getVariableStyle("--accent-color");
   const scale: number = convertRemToPixels(1);
   const ctx: CanvasRenderingContext2D = canvas.getContext("2d")!;
   ctx.lineWidth = 1;

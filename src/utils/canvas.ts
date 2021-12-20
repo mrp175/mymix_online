@@ -53,6 +53,40 @@ export function populateCanvas(
   ctx.stroke();
 }
 
+// export function populateCanvas(
+//   canvas: HTMLCanvasElement,
+//   ctx: CanvasRenderingContext2D,
+//   height: number,
+//   spacing: number,
+//   textSize: number,
+//   trackLane?: boolean // if true, doesn't draw numbers or half length lines. For use in a track lane only.
+// ): void {
+//   ctx.lineWidth = 1;
+//   ctx.font = `${textSize}rem serif`;
+//   ctx.strokeStyle = getVariableStyle("--light-main");
+//   ctx.fillStyle = "#ffffff";
+
+//   let count = 0;
+//   ctx.beginPath();
+//   for (let i = 0; i < canvas.width; i += spacing / 4) {
+//     if (trackLane) {
+//       ctx.moveTo(i + 0.5, 0);
+//       ctx.lineTo(i + 0.5, height);
+//     } else if (count % 4 === 0) {
+//       ctx.moveTo(i + 0.5, 0);
+//       ctx.lineTo(i + 0.5, height);
+//       ctx.fillText(count / 4 + 1 + "", i + 4, height / 3);
+//     } else {
+//       ctx.moveTo(i + 0.5, height);
+//       ctx.lineTo(i + 0.5, height - height / 4);
+//     }
+//     count += 1;
+//   }
+//   ctx.stroke();
+// }
+
+// function bpm() {}
+
 // Handles adjust canvas width and redraws content when screen width changes.
 export function handleResize(
   canvas: HTMLCanvasElement,
@@ -97,11 +131,9 @@ export function generateWaveform(
   canvasRef: React.RefObject<HTMLCanvasElement>,
   parentRef: React.RefObject<HTMLDivElement>,
   waveform: WaveformData,
-  zoomLevel: number = 128,
   startOffset: number = 0,
   gain: number = 1
 ) {
-  waveform = waveform.resample({ scale: zoomLevel });
   const canvas = canvasRef.current as HTMLCanvasElement;
   canvas.height = parentRef.current?.offsetHeight as number;
   canvas.width = 2000;
@@ -136,4 +168,22 @@ function scaleY(amplitude: number, height: number, gain: number): number {
   const range = 256;
   const offset = 128;
   return height - ((amplitude * gain + offset) * height) / range;
+}
+
+export function barsPerSecond(bpm: number): number {
+  const beatsPerSecond = bpm / 60;
+  return beatsPerSecond / 4;
+}
+
+export function secondsPerBar(bpm: number): number {
+  const beatsPerSecond = bpm / 60;
+  return 1 / (beatsPerSecond / 4);
+}
+
+export function pixelsPerSecond(zoomLevel: number): number {
+  return 44100 / zoomLevel;
+}
+
+export function pixelsPerBar(bpm: number, zoomLevel: number): number {
+  return pixelsPerSecond(zoomLevel) * barsPerSecond(bpm);
 }

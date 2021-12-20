@@ -23,7 +23,14 @@ export default function Waveform({ id }: { id: string }) {
   useEffect(
     function () {
       if (waveform) {
-        generateWaveform(canvasRef, parentRef, waveform, zoomLevel, 0, gain);
+        const zoomedWaveform = waveform.resample({ scale: zoomLevel });
+        // const zoomedWaveform = waveform.resample({ width: zoomLevel });
+        console.log(zoomedWaveform.pixels_per_second);
+        // console.log(waveform.duration);
+        // console.log(waveform.scale);
+        console.log(zoomedWaveform.seconds_per_pixel);
+        // console.log(waveform.length / (44100 / 128));
+        generateWaveform(canvasRef, parentRef, zoomedWaveform, 0, gain);
       }
     },
     [waveform, zoomLevel, gain]
