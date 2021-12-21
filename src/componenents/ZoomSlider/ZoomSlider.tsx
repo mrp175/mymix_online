@@ -10,6 +10,8 @@ import {
 } from ".././../utils/rangeSlider";
 import { MouseInput } from "../../utils/handleMouseInput";
 import { convertPixelsToRem, getVariableStyle } from "../../utils/utils";
+import { useAppDispatch } from "../../redux/hooks";
+import { setMouseDown } from "../../redux/slices/zoomLevelSlice";
 
 export default function ZoomSlider({
   min,
@@ -29,6 +31,8 @@ export default function ZoomSlider({
 
   const accentColor = getVariableStyle("--accent-color");
   const darkAlt = getVariableStyle("--dark-alt");
+
+  const dispatch = useAppDispatch();
 
   function applyStyles(
     parent: HTMLDivElement,
@@ -77,7 +81,8 @@ export default function ZoomSlider({
     addGenericEventListener(knub, "mousedown", mouse.handleDown);
 
     addGenericEventListener(window, "mousemove", (e: MouseEvent) =>
-      mouse.handleMove(e, knub, () =>
+      mouse.handleMove(e, knub, () => {
+        dispatch(setMouseDown(true));
         handleMouseMove(
           min,
           max,
@@ -85,14 +90,15 @@ export default function ZoomSlider({
           style.crossAxisLength,
           mouse,
           setState
-        )
-      )
+        );
+      })
     );
 
     addGenericEventListener(window, "mouseup", (e: MouseEvent) =>
-      mouse.handleUp(e, knub, () =>
-        handleMouseUp(mouse, state.lastValue, setState)
-      )
+      mouse.handleUp(e, knub, () => {
+        dispatch(setMouseDown(false));
+        handleMouseUp(mouse, state.lastValue, setState);
+      })
     );
   }, []);
 

@@ -81,6 +81,15 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 //   ctx.stroke();
 // }
 
+// sets the scale for the canvas overlay so that it matches the actual waveform zoom level. This works when applied with css scaling. Function is designed to prevet constant redraws to canvas and resampling of waveform zoom level.
+export function setScaleX(currentScale: number): number {
+  if (currentScale > 2) {
+    currentScale *= 0.5;
+    return setScaleX(currentScale);
+  }
+  return currentScale;
+}
+
 // draw vertical lin on canvas at specific x position from 0 y value to height value
 export function drawLine(
   ctx: CanvasRenderingContext2D,
@@ -154,12 +163,12 @@ export function generateWaveform(
   parentRef: React.RefObject<HTMLDivElement>,
   waveform: WaveformData,
   startOffset: number = 0,
-  gain: number = 1
+  gain: number = 1,
+  length: number = waveform.length
 ) {
   const canvas = canvasRef.current as HTMLCanvasElement;
   canvas.height = parentRef.current?.offsetHeight as number;
-  canvas.width = 2000;
-
+  canvas.width = 20000;
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   ctx.strokeStyle = "#164664";
   ctx.lineWidth = 1;
@@ -169,7 +178,6 @@ export function generateWaveform(
   const channel = waveform.channel(0);
   ctx.beginPath();
 
-  let length = 2000;
   if (length > waveform.length) length = waveform.length;
 
   for (let x = startOffset; x < length; x += 2) {
@@ -184,6 +192,18 @@ export function generateWaveform(
 
   ctx.stroke();
   ctx.fill();
+}
+
+export function generateInitialWaveform(
+  canvasRef: React.RefObject<HTMLCanvasElement>,
+  parentRef: React.RefObject<HTMLDivElement>,
+  waveform: WaveformData
+) {
+  let hasRun = false;
+  if (!hasRun) {
+    generateWaveform(canvasRef, parentRef, waveform);
+    return waveform.toArrayBuffer();
+  }
 }
 
 function scaleY(amplitude: number, height: number, gain: number): number {

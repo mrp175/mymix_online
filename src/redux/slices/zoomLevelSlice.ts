@@ -2,9 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ZoomLevelState {
   zoomLevel: number;
+  mouseDown: boolean;
 }
 
-const initialState: ZoomLevelState = { zoomLevel: 128 };
+const initialState: ZoomLevelState = { zoomLevel: 128, mouseDown: false };
 
 export const zoomLevelStateSlice = createSlice({
   name: "Zoom Level",
@@ -13,10 +14,13 @@ export const zoomLevelStateSlice = createSlice({
     setZoomLevel: (state, action: PayloadAction<number>) => {
       state.zoomLevel = action.payload;
     },
+    setMouseDown: (state, action: PayloadAction<boolean>) => {
+      state.mouseDown = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setZoomLevel } = zoomLevelStateSlice.actions;
+export const { setZoomLevel, setMouseDown } = zoomLevelStateSlice.actions;
 
 export default zoomLevelStateSlice.reducer;
