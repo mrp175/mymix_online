@@ -27,6 +27,7 @@ export function useCreateRefs(): [
 type CtxStringPropName = "strokeStyle" | "font" | "fillStyle";
 type CtxNumberPropName = "lineWidth";
 
+// any variables passed in inside the values object will has their value applied to the ctx property name that is the same name of the variable.
 export function applyCtxProperties(
   ctx: CanvasRenderingContext2D,
   values: { [key: string]: string | number }
@@ -81,11 +82,11 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 //   ctx.stroke();
 // }
 
-// sets the scale for the canvas overlay so that it matches the actual waveform zoom level. This works when applied with css scaling. Function is designed to prevet constant redraws to canvas and resampling of waveform zoom level.
-export function setScaleX(currentScale: number): number {
+// calculates the scale x transform required for the canvas overlay so that it matches the actual waveform zoom level. This works when applied with css scaling. Function is designed to prevet constant redraws to canvas and resampling of waveform zoom level.
+export function calculateScaleX(currentScale: number): number {
   if (currentScale > 2) {
     currentScale *= 0.5;
-    return setScaleX(currentScale);
+    return calculateScaleX(currentScale);
   }
   return currentScale;
 }
