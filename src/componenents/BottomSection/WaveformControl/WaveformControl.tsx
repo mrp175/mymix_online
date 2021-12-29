@@ -1,9 +1,14 @@
 import "./WaveformControl.scss";
 import Dial from "../../Dial/Dial";
 import VolumeSlider from "../../VolumeSlider/VolumeSlider";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { setGain } from "../../../redux/slices/waveformStateSlice";
 
 export default function WaveformControl() {
-  function changeVolume(): void {}
+  const dispatch = useAppDispatch();
+  function changeVolume(value: number): void {
+    dispatch(setGain({ id: "1", value }));
+  }
   return (
     <div className="WaveformControl">
       <Dial
@@ -18,10 +23,13 @@ export default function WaveformControl() {
       />
       <VolumeSlider
         style={{ mainAxisLength: 10, crossAxisLength: 1 }}
-        min={200}
-        max={20000}
-        init={75}
-        onChange={changeVolume}
+        min={0}
+        max={2}
+        init={1}
+        onChange={(val) => {
+          changeVolume(val);
+        }}
+        id="1"
       />
     </div>
   );

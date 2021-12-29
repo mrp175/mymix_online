@@ -15,7 +15,7 @@ import {
 } from "../../utils/utils";
 import { DialState } from "../../utils/dial";
 import { DialType } from "../../types/types";
-import { addGenericEventListener } from "../../utils/waveformPositioning";
+import { addGenericEventListener } from "../../utils/utils";
 
 export default function Dial({
   min,

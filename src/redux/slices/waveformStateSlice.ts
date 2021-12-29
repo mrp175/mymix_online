@@ -5,6 +5,7 @@ export interface WaveformState {
   position: number;
   startOffset: number;
   gain: number;
+  mouseDown: boolean;
 }
 
 export interface WaveformStates {
@@ -14,6 +15,11 @@ export interface WaveformStates {
 interface SetState {
   id: string;
   value: number;
+}
+
+interface SetMouseState {
+  id: string;
+  value: boolean;
 }
 
 interface AddWaveform {
@@ -32,6 +38,7 @@ export const waveformStatesSlice = createSlice({
         position: action.payload.startPosition,
         startOffset: 0,
         gain: 1,
+        mouseDown: false,
       };
     },
     setPosition: (state, action: PayloadAction<SetState>) => {
@@ -43,12 +50,20 @@ export const waveformStatesSlice = createSlice({
     setGain: (state, action: PayloadAction<SetState>) => {
       state[action.payload.id].gain = action.payload.value;
     },
+    setMouseDown: (state, action: PayloadAction<SetMouseState>) => {
+      state[action.payload.id].mouseDown = action.payload.value;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addWaveform, setPosition, setStartOffset, setGain } =
-  waveformStatesSlice.actions;
+export const {
+  addWaveform,
+  setPosition,
+  setStartOffset,
+  setGain,
+  setMouseDown,
+} = waveformStatesSlice.actions;
 
 export const waveformStates = (state: RootState) => state.waveformStates;
 

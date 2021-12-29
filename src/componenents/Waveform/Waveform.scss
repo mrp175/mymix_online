@@ -5,9 +5,11 @@
   left: 0;
   top: 0;
   transition: opacity 0.4s ease;
+  background: rgb(86, 167, 219);
+  overflow: hidden;
+  border-radius: 0.25rem;
 
   &__canvas {
-    border-radius: 0.25rem;
     position: absolute;
     left: 0;
     top: 0;

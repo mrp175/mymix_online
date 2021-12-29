@@ -85,3 +85,7 @@ export interface RangeSlider {
   };
   onChange: (val: number) => void;
 }
+
+export interface VolumeSliderType extends RangeSlider {
+  id: string;
+}

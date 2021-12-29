@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Component } from "react";
 import "./ZoomedWaveforms.scss";
 import { useCreateNullRefs } from "../../../utils/utils";
 import { useAppSelector } from "../../../redux/hooks";
@@ -8,20 +8,27 @@ import { calculateScaleX, generateWaveform } from "../../../utils/canvas";
 export default function ZoomedWaveforms({
   waveform,
   parentRef,
+  id,
 }: {
   waveform: WaveformData | null;
   parentRef: React.RefObject<HTMLDivElement>;
+  id: string;
 }) {
   const { mouseDown, zoomLevel } = useAppSelector((state) => state.zoomLevel);
+  const { gain } = useAppSelector((state) => state.waveformStates[id]);
   const [scalingFactor, setScalingFactor] = useState(1);
-  const [newWaveform, setNewWaveform] = useState<WaveformData | null>(null);
   let type = document.createElement("canvas");
   const waveformRefs = useCreateNullRefs(
     ["_1", "_2", "_4", "_8", "_16", "_32", "_64", "_128", "_256"],
     type
   );
+  const componentRef = useRef<HTMLDivElement>(null);
 
-  function zoomWaveform(canvas: HTMLCanvasElement, scaleAmount: number): void {
+  function zoomWaveform(
+    canvas: HTMLCanvasElement,
+    scaleAmount: number,
+    gain: number
+  ): void {
     canvas.style.transformOrigin = "0 0";
     canvas.style.opacity = "1";
     canvas.style.transform = `scaleX(${1 / scaleAmount})`;
@@ -35,7 +42,7 @@ export default function ZoomedWaveforms({
       const scale = +refKey.substring(1) * 128;
       if (waveform) {
         const newWaveform = waveform.resample({ scale });
-        generateWaveform(canvasRef, parentRef, newWaveform, 0, 1, 2000);
+        generateWaveform(canvasRef, parentRef, newWaveform, 0, 1, 20000);
       }
     }
   }
@@ -64,7 +71,7 @@ export default function ZoomedWaveforms({
             oldCanvas.style.opacity = "0";
             setScalingFactor(currentScalingFactor);
           }
-          zoomWaveform(currentCanvas, scaledZoom);
+          zoomWaveform(currentCanvas, scaledZoom, gain);
         }
 
         if (!mouseDown) {
@@ -73,6 +80,16 @@ export default function ZoomedWaveforms({
       }
     },
     [zoomLevel, mouseDown, waveform]
+  );
+
+  useEffect(
+    function () {
+      const parent = parentRef.current!;
+      const component = componentRef.current!;
+      component.style.height = parent.offsetHeight + "px";
+      component.style.transform = `scaleY(${gain})`;
+    },
+    [gain]
   );
 
   function createCanvasElements(refs: {
@@ -92,5 +109,9 @@ export default function ZoomedWaveforms({
 
   const canvases = createCanvasElements(waveformRefs);
 
-  return <div className="ZoomedWaveforms">{canvases}</div>;
+  return (
+    <div className="ZoomedWaveforms" ref={componentRef}>
+      {canvases}
+    </div>
+  );
 }

@@ -11,7 +11,7 @@ export const minimumLineSpacing = 4;
 
 const remScale = 1;
 const textSize = remScale / 1.45; //this is what it will be in rem.
-export const barSpacing = 7; // This should scale with zoom.
+export const barSpacing = 4; // This should scale with zoom.
 export const scale = convertRemToPixels(remScale);
 
 // Create refs
@@ -46,41 +46,6 @@ export function applyCtxProperties(
 
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-
-// Draws numbers and bar lines to canvas. Used for the bar count at top of sequencer, and the backdrop for each tracklane.
-// export function populateCanvas(
-//   canvas: HTMLCanvasElement,
-//   ctx: CanvasRenderingContext2D,
-//   height: number,
-//   remSpacing: number,
-//   remToPx: number,
-//   textSize: number,
-//   trackLane?: boolean // if true, doesn't draw numbers or half length lines. For use in a track lane only.
-// ): void {
-//   ctx.lineWidth = 1;
-//   ctx.font = `${textSize}rem serif`;
-//   ctx.strokeStyle = getVariableStyle("--light-main");
-//   ctx.fillStyle = "#ffffff";
-
-//   const pxSpacing: number = remSpacing * remToPx;
-//   let count = 0;
-//   ctx.beginPath();
-//   for (let i = 0; i < canvas.width; i += pxSpacing / 4) {
-//     if (trackLane) {
-//       ctx.moveTo(i + 0.5, 0);
-//       ctx.lineTo(i + 0.5, height);
-//     } else if (count % 4 === 0) {
-//       ctx.moveTo(i + 0.5, 0);
-//       ctx.lineTo(i + 0.5, height);
-//       ctx.fillText(count / 4 + 1 + "", i + 4, height / 3);
-//     } else {
-//       ctx.moveTo(i + 0.5, height);
-//       ctx.lineTo(i + 0.5, height - height / 4);
-//     }
-//     count += 1;
-//   }
-//   ctx.stroke();
-// }
 
 // calculates the scale x transform required for the canvas overlay so that it matches the actual waveform zoom level. This works when applied with css scaling. Function is designed to prevet constant redraws to canvas and resampling of waveform zoom level.
 export function calculateScaleX(currentScale: number): number {
@@ -173,20 +138,20 @@ export function generateWaveform(
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   ctx.strokeStyle = "#164664";
   ctx.lineWidth = 1;
-  ctx.fillStyle = "rgb(86,167,219)";
-  ctx.fillRect(0, 0, waveform.length, canvas.height);
+  // ctx.fillStyle = "rgb(86,167,219)";
+  // ctx.fillRect(0, 0, waveform.length, canvas.height);
   ctx.fillStyle = "#164664";
   const channel = waveform.channel(0);
   ctx.beginPath();
 
   if (length > waveform.length) length = waveform.length;
 
-  for (let x = startOffset; x < length; x += 2) {
+  for (let x = startOffset; x < length; x += 1) {
     const val = channel.max_sample(x);
     ctx.rect(
       x - startOffset + 0.5,
       scaleY(val, canvas.height, gain),
-      2,
+      1,
       canvas.height - scaleY(val, canvas.height, gain) * 2
     );
   }

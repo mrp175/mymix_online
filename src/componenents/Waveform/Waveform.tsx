@@ -6,20 +6,24 @@ import { loadAudioFile } from "../../utils/loadAudioFile";
 import WaveformData from "waveform-data";
 import { handleUserInput } from "../../utils/waveformPositioning";
 import ZoomedWaveforms from "./ZoomedWaveforms/ZoomedWaveforms";
+import HandleWaveformGain from "./HandleWaveformGain/HandleWaveformGain";
 
 export default function Waveform({ id }: { id: string }) {
   const [canvasRef, parentRef] = useCreateRefs();
-  const initialWaveformCanvasRef = useRef<HTMLCanvasElement>(null);
   const [waveform, setWaveform] = useState<WaveformData | null>(null);
   const { position, gain, startOffset } = useAppSelector(
-    (state) => state.waveformStates["1"]
+    (state) => state.waveformStates[id]
   );
-  const { zoomLevel, mouseDown } = useAppSelector((state) => state.zoomLevel);
+  const { zoomLevel } = useAppSelector((state) => state.zoomLevel);
+  const zoomMouseDown = useAppSelector((state) => state.zoomLevel.mouseDown);
+  const gainMouseDown = useAppSelector(
+    (state) => state.waveformStates[id].mouseDown
+  );
   const dispatch = useAppDispatch();
 
   useEffect(function () {
     loadAudioFile(setWaveform);
-    handleUserInput(canvasRef, parentRef, "1", dispatch);
+    handleUserInput(canvasRef, parentRef, id, dispatch);
   }, []);
 
   // draw waveform once mouse click is realeased. Prevents too many resamples of the WaveformData object and canvas redraws.
@@ -27,17 +31,22 @@ export default function Waveform({ id }: { id: string }) {
     function () {
       if (waveform) {
         const canvas = canvasRef.current!;
-        if (!mouseDown) {
+        const parent = parentRef.current!;
+        if (!zoomMouseDown && !gainMouseDown) {
+          parent.style.width = "20000px";
           canvas.style.opacity = "1";
           const zoomedWaveform = waveform.resample({ scale: zoomLevel });
-          generateWaveform(canvasRef, parentRef, zoomedWaveform, 0, gain, 2000);
+          generateWaveform(canvasRef, parentRef, zoomedWaveform, 0, 1, 20000);
         }
-        if (mouseDown) {
+        if (zoomMouseDown) {
           canvas.style.opacity = "0";
+        }
+        if (gainMouseDown) {
+          canvas.style.transform = `scaleY(${gain})`;
         }
       }
     },
-    [waveform, gain, mouseDown, zoomLevel]
+    [waveform, zoomMouseDown, zoomLevel, gain, gainMouseDown]
   );
 
   useEffect(
@@ -53,7 +62,9 @@ export default function Waveform({ id }: { id: string }) {
       <ZoomedWaveforms
         parentRef={parentRef}
         waveform={waveform ? waveform : null}
+        id="1"
       />
+      <HandleWaveformGain canvasRef={canvasRef} waveform={waveform} id="1" />
     </div>
   );
 }

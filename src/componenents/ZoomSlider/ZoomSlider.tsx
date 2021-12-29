@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import "./ZoomSlider.scss";
 import { drawToCanvas } from ".././../utils/rangeSlider";
 import { RangeSlider } from "../../types/types";
-import { addGenericEventListener } from "../../utils/waveformPositioning";
+import { addGenericEventListener } from "../../utils/utils";
 import {
   setValueToPos,
   handleMouseMove,
