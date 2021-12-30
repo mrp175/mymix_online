@@ -15,6 +15,7 @@ export default function Waveform({ id }: { id: string }) {
     (state) => state.waveformStates[id]
   );
   const { zoomLevel } = useAppSelector((state) => state.zoomLevel);
+  const zoomLevelRef = useRef(zoomLevel);
   const zoomMouseDown = useAppSelector((state) => state.zoomLevel.mouseDown);
   const gainMouseDown = useAppSelector(
     (state) => state.waveformStates[id].mouseDown
@@ -23,7 +24,7 @@ export default function Waveform({ id }: { id: string }) {
 
   useEffect(function () {
     loadAudioFile(setWaveform);
-    handleUserInput(canvasRef, parentRef, id, dispatch);
+    handleUserInput(canvasRef, parentRef, id, zoomLevelRef, dispatch);
   }, []);
 
   // draw waveform once mouse click is realeased. Prevents too many resamples of the WaveformData object and canvas redraws.
@@ -54,6 +55,13 @@ export default function Waveform({ id }: { id: string }) {
       parentRef.current!.style.left = position + "px";
     },
     [position]
+  );
+
+  useEffect(
+    function () {
+      zoomLevelRef.current = zoomLevel;
+    },
+    [zoomLevel]
   );
 
   return (
