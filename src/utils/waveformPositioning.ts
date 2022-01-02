@@ -61,6 +61,8 @@ function handleMouseMove(
       waveform.currentPositionX,
       zoomLevelRef
     );
+    const pixels_per_bar = pixelsPerBar(174, zoomLevelRef.current);
+    waveform.currentBar = Math.floor(waveform.currentBar / pixels_per_bar); // Math.floor stops incorrect result with floating point numbers. Change this once you allow moving waveforms with floats.
     dispatch(setPosition({ id: "1", value: waveform.currentBar }));
     parentDiv.style.opacity = "0.6";
   }
@@ -78,7 +80,6 @@ function findNearestBar(
   waveformPositionX: number,
   spacing: React.MutableRefObject<number>
 ): number {
-  console.log(spacing);
   const pixels_per_bar = pixelsPerBar(174, spacing.current);
   const nearestBar =
     Math.floor((waveformPositionX + pixels_per_bar / 2) / pixels_per_bar) *

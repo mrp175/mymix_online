@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef, Component } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./ZoomedWaveforms.scss";
 import { useCreateNullRefs } from "../../../utils/utils";
 import { useAppSelector } from "../../../redux/hooks";
 import WaveformData from "waveform-data";
 import { calculateScaleX, generateWaveform } from "../../../utils/canvas";
+import { minimumZoomLevel } from "../../../constants/constants";
 
 export default function ZoomedWaveforms({
   waveform,
@@ -16,12 +17,22 @@ export default function ZoomedWaveforms({
 }) {
   const { mouseDown, zoomLevel } = useAppSelector((state) => state.zoomLevel);
   const { gain } = useAppSelector((state) => state.waveformStates[id]);
-  const [scalingFactor, setScalingFactor] = useState(1);
+  const [scalingFactor, setScalingFactor] = useState(128);
   let type = document.createElement("canvas");
-  const waveformRefs = useCreateNullRefs(
-    ["_1", "_2", "_4", "_8", "_16", "_32", "_64", "_128", "_256"],
-    type
-  );
+
+  function createZoomLevelRefStrings() {
+    const result = [];
+    let i = minimumZoomLevel;
+    do {
+      result.push("_" + i);
+      i *= 2;
+    } while (i < 35000);
+    return result;
+  }
+
+  const zoomLevels = createZoomLevelRefStrings();
+
+  const waveformRefs = useCreateNullRefs(zoomLevels, type);
   const componentRef = useRef<HTMLDivElement>(null);
 
   function zoomWaveform(
@@ -39,7 +50,7 @@ export default function ZoomedWaveforms({
   }): void {
     for (let refKey in waveformRefs) {
       const canvasRef = waveformRefs[refKey];
-      const scale = +refKey.substring(1) * 128;
+      const scale = +refKey.substring(1);
       if (waveform) {
         const newWaveform = waveform.resample({ scale });
         generateWaveform(canvasRef, parentRef, newWaveform, 0, 1, 20000);
@@ -57,10 +68,9 @@ export default function ZoomedWaveforms({
   useEffect(
     function () {
       if (waveform) {
-        const scaledZoomLevel = zoomLevel / 128;
+        const scaledZoomLevel = zoomLevel;
         const scaledZoom = calculateScaleX(scaledZoomLevel);
         const currentScalingFactor = scaledZoomLevel / scaledZoom;
-
         const currentCanvas: HTMLCanvasElement =
           waveformRefs[`_${currentScalingFactor}`].current!;
         const parent = parentRef.current!;

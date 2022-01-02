@@ -3,14 +3,21 @@ import { useAppDispatch } from "../../../redux/hooks";
 import { setZoomLevel } from "../../../redux/slices/zoomLevelSlice";
 import { handleRangeBias, mapNumberRange } from "../../../utils/utils";
 import ZoomSlider from "../../ZoomSlider/ZoomSlider";
+import { minimumZoomLevel } from "../../../constants/constants";
 
 export default function ZoomControl() {
   const dispatch = useAppDispatch();
   const min = 0;
   const max = 1;
   function changeZoomLevel(value: number): void {
-    let mappedValue: number = handleRangeBias(value, 0.6, "log")!;
-    mappedValue = mapNumberRange(mappedValue, min, max, 128, 40000);
+    let mappedValue: number = handleRangeBias(value, 0.7, "log")!;
+    mappedValue = mapNumberRange(
+      mappedValue,
+      min,
+      max,
+      minimumZoomLevel,
+      40000
+    );
     dispatch(setZoomLevel(mappedValue));
   }
   return (

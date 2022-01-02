@@ -1,5 +1,6 @@
 import WaveformData from "waveform-data";
 import audioFile from "../audio-files/audio1.mp3";
+import { minimumZoomLevel } from "../constants/constants";
 // const audioFile = require("../audio-files/audio1.mp3");
 
 //"https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
@@ -12,7 +13,7 @@ export async function loadAudioFile(setAudio) {
       const options = {
         audio_context: audioContext,
         array_buffer: buffer,
-        scale: 128,
+        scale: minimumZoomLevel,
       };
 
       return new Promise((resolve, reject) => {

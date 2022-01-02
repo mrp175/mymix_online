@@ -23,14 +23,17 @@ export function decibelsToAmplitude(decibels: number): number {
   return Math.pow(10, decibels / 20);
 }
 
-export function handleRangeBias(x: number, bias: number, type: "exp" | "log") {
+export function handleRangeBias(
+  x: number,
+  bias: number,
+  type: "exp" | "log"
+): number {
   if (type === "exp") {
     x = 1 - x;
     let k = Math.pow(1 - bias, 3);
     k = (x * k) / (x * k - x + 1);
     return 1 - k;
-  }
-  if (type === "log") {
+  } else {
     let k = Math.pow(1 - bias, 3);
     k = (x * k) / (x * k - x + 1);
     return k;

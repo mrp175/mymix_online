@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { getVariableStyle } from "./utils";
-import { convertRemToPixels } from "./utils";
+import { getVariableStyle, convertRemToPixels, handleRangeBias } from "./utils";
 import WaveformData from "waveform-data";
 
 export const lineWidth = 1;
@@ -49,7 +48,7 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 // calculates the scale x transform required for the canvas overlay so that it matches the actual waveform zoom level. This works when applied with css scaling. Function is designed to prevet constant redraws to canvas and resampling of waveform zoom level.
 export function calculateScaleX(currentScale: number): number {
-  if (currentScale > 2) {
+  if (currentScale >= 2) {
     currentScale *= 0.5;
     return calculateScaleX(currentScale);
   }
@@ -146,16 +145,35 @@ export function generateWaveform(
 
   if (length > waveform.length) length = waveform.length;
 
-  for (let x = startOffset; x < length; x += 1) {
+  // for (let x = startOffset; x < length; x += 1) {
+  //   let val = channel.max_sample(x);
+  //   // val = handleRangeBias(val / 127, 0.2, "exp") * 127;
+  //   ctx.rect(
+  //     x - startOffset + 0.5,
+  //     scaleY(val, canvas.height, gain),
+  //     1,
+  //     canvas.height - scaleY(val, canvas.height, gain) * 2
+  //   );
+  // }
+
+  // ctx.stroke();
+  // ctx.fill();
+
+  // Loop forwards, drawing the upper half of the waveform
+  for (let x = 0; x < waveform.length; x++) {
     const val = channel.max_sample(x);
-    ctx.rect(
-      x - startOffset + 0.5,
-      scaleY(val, canvas.height, gain),
-      1,
-      canvas.height - scaleY(val, canvas.height, gain) * 2
-    );
+
+    ctx.lineTo(x + 0.5, scaleY(val, canvas.height, gain) + 0.5);
   }
 
+  // Loop backwards, drawing the lower half of the waveform
+  for (let x = waveform.length - 1; x >= 0; x--) {
+    const val = channel.min_sample(x);
+
+    ctx.lineTo(x + 0.5, scaleY(val, canvas.height, gain) + 0.5);
+  }
+
+  ctx.closePath();
   ctx.stroke();
   ctx.fill();
 }

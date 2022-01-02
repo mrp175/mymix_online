@@ -1,12 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import "./Waveform.scss";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { useCreateRefs, generateWaveform } from "../../utils/canvas";
+import {
+  useCreateRefs,
+  generateWaveform,
+  pixelsPerBar,
+} from "../../utils/canvas";
 import { loadAudioFile } from "../../utils/loadAudioFile";
 import WaveformData from "waveform-data";
 import { handleUserInput } from "../../utils/waveformPositioning";
 import ZoomedWaveforms from "./ZoomedWaveforms/ZoomedWaveforms";
-import HandleWaveformGain from "./HandleWaveformGain/HandleWaveformGain";
 
 export default function Waveform({ id }: { id: string }) {
   const [canvasRef, parentRef] = useCreateRefs();
@@ -52,9 +55,10 @@ export default function Waveform({ id }: { id: string }) {
 
   useEffect(
     function () {
-      parentRef.current!.style.left = position + "px";
+      const pixels_per_bar = pixelsPerBar(174, zoomLevel);
+      parentRef.current!.style.left = position * pixels_per_bar + "px";
     },
-    [position]
+    [position, zoomLevel]
   );
 
   useEffect(
@@ -72,7 +76,6 @@ export default function Waveform({ id }: { id: string }) {
         waveform={waveform ? waveform : null}
         id="1"
       />
-      <HandleWaveformGain canvasRef={canvasRef} waveform={waveform} id="1" />
     </div>
   );
 }
