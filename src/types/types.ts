@@ -1,3 +1,5 @@
+import { AppDispatch } from "../redux/store";
+
 export interface MouseX {
   isDown: boolean;
   startX: number;
@@ -40,19 +42,6 @@ export interface NewMouseState {
 
 export type HandleMouseInput = (
   e: MouseEvent,
-  parentRef?: HTMLDivElement | undefined,
-  callback?:
-    | ((
-        mouse: MouseState,
-        parentRef?: HTMLDivElement | undefined,
-        state?: number
-      ) => void)
-    | undefined
-) => void;
-
-export type HandleMouseInput2 = (
-  e: MouseEvent,
-  state: number,
   parentRef?: HTMLDivElement | undefined,
   callback?:
     | ((

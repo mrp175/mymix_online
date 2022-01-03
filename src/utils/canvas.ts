@@ -10,8 +10,8 @@ export const minimumLineSpacing = 4;
 
 const remScale = 1;
 const textSize = remScale / 1.45; //this is what it will be in rem.
-export const barSpacing = 4; // This should scale with zoom.
-export const scale = convertRemToPixels(remScale);
+export const defaultBarSpacing = 4; // This should scale with zoom.
+export const pixelsPerRem = convertRemToPixels(remScale);
 
 // Create refs
 export function useCreateRefs(): [

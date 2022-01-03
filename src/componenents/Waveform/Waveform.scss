@@ -9,6 +9,12 @@
   overflow: hidden;
   border-radius: 0.25rem;
 
+  &__content-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
   &__canvas {
     position: absolute;
     left: 0;

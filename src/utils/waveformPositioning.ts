@@ -2,10 +2,10 @@ import React from "react";
 import { setPosition } from "../redux/slices/waveformStateSlice";
 import { MouseX, Waveform } from "../types/types";
 import { addGenericEventListener } from "./utils";
-import { barSpacing, scale, pixelsPerBar } from "./canvas";
+import { defaultBarSpacing, pixelsPerRem, pixelsPerBar } from "./canvas";
 import { AppDispatch } from "../redux/store";
 
-const spacing: number = barSpacing * scale;
+const spacing: number = defaultBarSpacing * pixelsPerRem;
 
 const mouse: MouseX = {
   isDown: false,
