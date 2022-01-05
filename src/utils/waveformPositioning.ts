@@ -1,91 +1,75 @@
-import React from "react";
-import { setPosition } from "../redux/slices/waveformStateSlice";
-import { MouseX, Waveform } from "../types/types";
-import { addGenericEventListener } from "./utils";
-import { defaultBarSpacing, pixelsPerRem, pixelsPerBar } from "./canvas";
-import { AppDispatch } from "../redux/store";
+import { MouseState } from "../types/types";
+import { pixelsPerBar } from "./canvas";
 
-const spacing: number = defaultBarSpacing * pixelsPerRem;
+//Declare function interfaces-----------
+type SetWaveformPosition = React.Dispatch<
+  React.SetStateAction<{
+    currentPosition: number;
+    lastPosition: number;
+    mouseDown: boolean;
+  }>
+>;
 
-const mouse: MouseX = {
-  isDown: false,
-  startX: 0,
-  endX: 0,
-  distanceTravelled: 0,
-};
-
-const waveform: Waveform = {
-  startX: 0,
-  currentPositionX: 0,
-  currentBar: 0,
-};
-
-// Adds event listeners for mousedown, mousemove and mouseup.
-export function handleUserInput(
-  canvasRef: React.RefObject<HTMLCanvasElement>,
-  parentRef: React.RefObject<HTMLDivElement>,
-  id: string,
-  zoomLevelRef: React.MutableRefObject<number>,
-  dispatch: AppDispatch
-): void {
-  const parent = parentRef.current;
-  addGenericEventListener(
-    parent as HTMLDivElement,
-    "mousedown",
-    handleMouseDown
-  );
-  addGenericEventListener(window, "mousemove", (e: MouseEvent) =>
-    handleMouseMove(e, dispatch, parent as HTMLDivElement, zoomLevelRef)
-  );
-  addGenericEventListener(window, "mouseup", (e: MouseEvent) =>
-    handleMouseUp(e, parent as HTMLDivElement)
-  );
+interface OnMouseDown {
+  (e: MouseEvent): void;
 }
 
-function handleMouseDown(e: MouseEvent): void {
+interface OnMouseMove {
+  (
+    setWaveformPosition: SetWaveformPosition,
+    zoomLevelRef?: React.MutableRefObject<number>,
+    mouseStateRef?: React.MutableRefObject<MouseState>
+  ): void;
+}
+
+interface OnMouseUp {
+  (setWaveformPosition: SetWaveformPosition): void;
+}
+
+interface SnapToGrid {
+  (position: number, gridSize: number): number;
+}
+
+//-------------------------------------
+
+//Prevents any unwanted actions on mouse down
+export const onMouseDown: OnMouseDown = function (e) {
   e.preventDefault();
-  mouse.isDown = true;
-  mouse.startX = e.clientX;
-}
+};
 
-function handleMouseMove(
-  e: MouseEvent,
-  dispatch: AppDispatch,
-  parentDiv: HTMLDivElement,
-  zoomLevelRef: React.MutableRefObject<number>
-): void {
-  if (mouse.isDown) {
-    mouse.distanceTravelled = e.clientX - mouse.startX;
-    waveform.currentPositionX = waveform.startX + mouse.distanceTravelled;
-    waveform.currentBar = findNearestBar(
-      waveform.currentPositionX,
-      zoomLevelRef
-    );
-    const pixels_per_bar = pixelsPerBar(174, zoomLevelRef.current);
-    waveform.currentBar = Math.floor(waveform.currentBar / pixels_per_bar); // Math.floor stops incorrect result with floating point numbers. Change this once you allow moving waveforms with floats.
-    dispatch(setPosition({ id: "1", value: waveform.currentBar }));
-    parentDiv.style.opacity = "0.6";
-  }
-}
+// Calculates number of bars/units the waveform needs to move and updates the state
+export const onMouseMove: OnMouseMove = function (
+  setWaveformPosition,
+  zoomLevelRef,
+  mouseState
+) {
+  setWaveformPosition((state) => {
+    const newState = { ...state };
+    const pixels_per_bar = pixelsPerBar(174, zoomLevelRef?.current!);
+    const distancedTravelled = mouseState?.current.x.distanceTravelled!;
+    const currentPosition =
+      (state.lastPosition * pixels_per_bar + distancedTravelled) /
+      pixels_per_bar;
+    newState.currentPosition = snapToGrid(currentPosition, 1);
+    return newState;
+  });
+};
 
-function handleMouseUp(e: MouseEvent, parentDiv: HTMLDivElement): void {
-  if (mouse.isDown) {
-    mouse.isDown = false;
-    waveform.startX = waveform.currentBar;
-    parentDiv.style.opacity = "1";
-  }
-}
+//Sets the last position property of state to the current position. This value will be used the next time onMouseMove is called
+export const onMouseUp: OnMouseUp = function (setWaveformPosition) {
+  setWaveformPosition((state) => {
+    const newState = { ...state };
+    newState.lastPosition = newState.currentPosition;
+    return newState;
+  });
+};
 
-function findNearestBar(
-  waveformPositionX: number,
-  spacing: React.MutableRefObject<number>
-): number {
-  const pixels_per_bar = pixelsPerBar(174, spacing.current);
-  const nearestBar =
-    Math.floor((waveformPositionX + pixels_per_bar / 2) / pixels_per_bar) *
-    pixels_per_bar;
-  if (nearestBar < 0) {
+//Snaps waveform to nearest grid point as declared in the gridSize parameter
+export const snapToGrid: SnapToGrid = function (position, gridSize) {
+  const scalingFactor = 1 / gridSize;
+  const closestGridPoint = Math.floor(position * scalingFactor + 0.5);
+  if (closestGridPoint < 0) {
     return 0;
   }
-  return nearestBar;
-}
+  return closestGridPoint / scalingFactor;
+};

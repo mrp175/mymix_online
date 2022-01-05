@@ -123,13 +123,70 @@ export function addResizeEventListeners(
 }
 
 //draw waveform to canvas
+export function generateWaveform2(
+  canvas: HTMLCanvasElement,
+  parentRef: React.RefObject<HTMLDivElement>,
+  waveform: WaveformData,
+  startOffset: number = 0,
+  gain: number = 1,
+  startSample: number = 0,
+  length: number = 10000
+) {
+  canvas.height = parentRef.current?.offsetHeight as number;
+  canvas.width = length;
+  if (startSample + length > waveform.length) {
+    canvas.width = waveform.length - startSample;
+  }
+  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+  ctx.strokeStyle = "#164664";
+  ctx.lineWidth = 1;
+  ctx.fillStyle = "white";
+  const channel = waveform.channel(0);
+  ctx.beginPath();
+
+  let endSample = length + startSample;
+
+  if (endSample > waveform.length) endSample = waveform.length;
+
+  // Loop forwards, drawing the upper half of the waveform
+  for (let x = startSample; x < endSample; x++) {
+    //max possible val = 127
+    const val = channel.max_sample(x);
+    ctx.lineTo(x - startSample + 0.5, scaleY(val, canvas.height, gain) + 0.5);
+  }
+
+  // Loop backwards, drawing the lower half of the waveform
+  for (let x = endSample - 1; x >= startSample; x--) {
+    const val = channel.min_sample(x);
+    ctx.lineTo(x - startSample + 0.5, scaleY(val, canvas.height, gain) + 0.5);
+  }
+
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fill();
+}
+
+// export function generateInitialWaveform(
+//   canvasRef: React.RefObject<HTMLCanvasElement>,
+//   parentRef: React.RefObject<HTMLDivElement>,
+//   waveform: WaveformData
+// ) {
+//   let hasRun = false;
+//   if (!hasRun) {
+//     generateWaveform(canvasRef, parentRef, waveform);
+//     return waveform.toArrayBuffer();
+//   }
+// }
+
+//draw waveform to canvas
 export function generateWaveform(
   canvasRef: React.RefObject<HTMLCanvasElement>,
   parentRef: React.RefObject<HTMLDivElement>,
   waveform: WaveformData,
   startOffset: number = 0,
   gain: number = 1,
-  length: number = waveform.length
+  startSample: number = 0,
+  length: number = 10000
 ) {
   const canvas = canvasRef.current as HTMLCanvasElement;
   canvas.height = parentRef.current?.offsetHeight as number;
@@ -139,7 +196,8 @@ export function generateWaveform(
   ctx.lineWidth = 1;
   // ctx.fillStyle = "rgb(86,167,219)";
   // ctx.fillRect(0, 0, waveform.length, canvas.height);
-  ctx.fillStyle = "#164664";
+  // ctx.fillStyle = "#164664";
+  ctx.fillStyle = "white";
   const channel = waveform.channel(0);
   ctx.beginPath();
 
@@ -158,16 +216,15 @@ export function generateWaveform(
 
   // ctx.stroke();
   // ctx.fill();
-
   // Loop forwards, drawing the upper half of the waveform
-  for (let x = 0; x < waveform.length; x++) {
+  for (let x = startSample; x < waveform.length; x++) {
+    //max possible val = 127
     const val = channel.max_sample(x);
-
     ctx.lineTo(x + 0.5, scaleY(val, canvas.height, gain) + 0.5);
   }
 
   // Loop backwards, drawing the lower half of the waveform
-  for (let x = waveform.length - 1; x >= 0; x--) {
+  for (let x = waveform.length - 1; x >= startSample; x--) {
     const val = channel.min_sample(x);
 
     ctx.lineTo(x + 0.5, scaleY(val, canvas.height, gain) + 0.5);

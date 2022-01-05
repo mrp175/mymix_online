@@ -1,1 +1,1 @@
-export const minimumZoomLevel = 16;
+export const minimumZoomLevel = 128;

@@ -41,7 +41,7 @@ export default function ZoomedWaveforms({
     gain: number
   ): void {
     canvas.style.transformOrigin = "0 0";
-    canvas.style.opacity = "1";
+    canvas.style.opacity = "0";
     canvas.style.transform = `scaleX(${1 / scaleAmount})`;
   }
 

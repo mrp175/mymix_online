@@ -24,6 +24,7 @@
   .sequencer {
     display: grid;
     grid-template-columns: 1rem auto;
+    overflow-x: scroll;
 
     .track-container {
       position: relative;

@@ -4,9 +4,9 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { generateWaveform, pixelsPerBar } from "../../utils/canvas";
 import { loadAudioFile } from "../../utils/loadAudioFile";
 import WaveformData from "waveform-data";
-import { handleUserInput } from "../../utils/waveformPositioning";
 import ZoomedWaveforms from "./ZoomedWaveforms/ZoomedWaveforms";
 import WaveformPositioning from "./WaveformPositioning/WaveformPositioning";
+import Canvas from "./Canvas/Canvas";
 
 export default function Waveform({ id }: { id: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -38,8 +38,8 @@ export default function Waveform({ id }: { id: string }) {
         const parent = componentRef.current!;
         // draw waveform only after zoom level is no longer being changed and click has been released. Prevents too many resamples of the WaveformData object and canvas redraws.
         if (!zoomMouseDown) {
-          parent.style.width = "20000px";
-          canvas.style.opacity = "1";
+          parent.style.width = waveform.length + "px";
+          canvas.style.opacity = "0";
           const zoomedWaveform = waveform.resample({ scale: zoomLevel });
           generateWaveform(
             canvasRef,
@@ -47,7 +47,8 @@ export default function Waveform({ id }: { id: string }) {
             zoomedWaveform,
             0,
             1,
-            20000
+            0,
+            10000
           );
         }
         //Hide waveform if zoom level is currently being changed. Displays ZoomedWaveforms component instead.
@@ -103,6 +104,11 @@ export default function Waveform({ id }: { id: string }) {
           id="1"
         />
       </div>
+      {waveform ? (
+        <Canvas parentRef={parentRef} waveform={waveform} />
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 }

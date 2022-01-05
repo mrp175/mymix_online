@@ -3,7 +3,7 @@ import {
   onMouseDown,
   onMouseMove,
   onMouseUp,
-} from "../../../utils/waveformPositioning2";
+} from "../../../utils/waveformPositioning";
 import {
   handleMouseDown,
   handleMouseMove,
@@ -41,18 +41,18 @@ export default function WaveformPositioning({
       const parent = parentRef.current!;
       addGenericEventListener(parent, "mousedown", (e: MouseEvent) => {
         handleMouseDown(e, setMouse);
-        onMouseDown(e, setWaveformPosition);
+        onMouseDown(e);
       });
       addGenericEventListener(window, "mousemove", (e: MouseEvent) => {
         if (mouseRef.current.isDown) {
           handleMouseMove(e, setMouse);
-          onMouseMove(e, setWaveformPosition, zoomLevelRef, mouseRef);
+          onMouseMove(setWaveformPosition, zoomLevelRef, mouseRef);
         }
       });
       addGenericEventListener(window, "mouseup", (e: MouseEvent) => {
         if (mouseRef.current.isDown) {
           handleMouseUp(e, setMouse);
-          onMouseUp(e, setWaveformPosition);
+          onMouseUp(setWaveformPosition);
         }
       });
     },

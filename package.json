@@ -1,5 +1,5 @@
 {
-  "homepage": "https://mrp175.github.io/mymix-online", 
+  "homepage": "https://mrp175.github.io/mymix-online",
   "name": "client",
   "version": "0.1.0",
   "private": true,
@@ -13,6 +13,7 @@
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "@types/react-redux": "^7.1.20",
+    "musicmetadata": "^2.0.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
