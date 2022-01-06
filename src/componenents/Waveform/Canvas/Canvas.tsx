@@ -3,19 +3,15 @@ import "./Canvas.scss";
 import WaveformData from "waveform-data";
 import { generateWaveform2 } from "../../../utils/canvas";
 
-export default function Canvas({
-  waveform,
-  parentRef,
-}: {
-  waveform: WaveformData;
-  parentRef: React.RefObject<HTMLDivElement>;
-}) {
-  interface canvasObj {
+export default function Canvas({ waveform }: { waveform: WaveformData }) {
+  const componentRef = useRef<HTMLDivElement>(null);
+  interface CanvasRefObj {
     [key: string]: HTMLCanvasElement | null;
   }
 
-  const canvasRefs = useRef<canvasObj>({});
+  const canvasRefs = useRef<CanvasRefObj>({});
 
+  //Creates required canvas elements and assigns a ref
   function createCanvases(waveform: WaveformData): JSX.Element[] {
     let html: JSX.Element[] = [];
     let i = 0;
@@ -24,7 +20,7 @@ export default function Canvas({
       const string = "_" + i;
       const canvas = (
         <canvas
-          key={i}
+          key={string}
           ref={(element) => (canvasRefs.current[string] = element)}
           className="canvas"
         ></canvas>
@@ -36,26 +32,31 @@ export default function Canvas({
     return html;
   }
 
-  function generateWaveforms(canvasObj: canvasObj): void {
-    let i = 0;
-    for (let canvas in canvasObj) {
-      generateWaveform2(
-        canvasObj[canvas] as HTMLCanvasElement,
-        parentRef,
-        waveform,
-        0,
-        1,
-        i,
-        10000
-      );
-      canvasObj[canvas]!.style.left = i + "px";
-      i += 10000;
+  const canvases = createCanvases(waveform);
+
+  //Generates waveform for each canvas using the refs
+  function generateWaveforms(refs: React.MutableRefObject<CanvasRefObj>): void {
+    const size = Object.keys(refs.current).length;
+    let position = 0;
+    for (let i = 0; i < size; i += 1) {
+      const canvas = refs.current["_" + i]!;
+      generateWaveform2(canvas, componentRef, waveform, 0, 1, position, 10000);
+      canvas!.style.left = position + "px";
+      position += 10000;
     }
   }
 
   useEffect(function () {
-    generateWaveforms(canvasRefs.current);
+    const parent = componentRef.current!;
+    const component = componentRef.current!;
+    component.style.width = waveform.length + "px";
+    component.style.height = parent.offsetHeight + "px";
+    generateWaveforms(canvasRefs);
   }, []);
 
-  return <div className="Canvas">{createCanvases(waveform)};</div>;
+  return (
+    <div className="Canvas" ref={componentRef}>
+      {canvases};
+    </div>
+  );
 }

@@ -11,7 +11,7 @@ interface WaveformId {
 const initialState: WaveformIds = {};
 
 export const waveformIdsSlice = createSlice({
-  name: "waveform IDs",
+  name: "Waveform IDs",
   initialState,
   reducers: {
     addId: (state, action: PayloadAction<WaveformId>) => {

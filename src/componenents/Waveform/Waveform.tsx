@@ -4,9 +4,8 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { generateWaveform, pixelsPerBar } from "../../utils/canvas";
 import { loadAudioFile } from "../../utils/loadAudioFile";
 import WaveformData from "waveform-data";
-import ZoomedWaveforms from "./ZoomedWaveforms/ZoomedWaveforms";
 import WaveformPositioning from "./WaveformPositioning/WaveformPositioning";
-import Canvas from "./Canvas/Canvas";
+import HandleZoom from "./HandleZoom/HandleZoom";
 
 export default function Waveform({ id }: { id: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -97,18 +96,15 @@ export default function Waveform({ id }: { id: string }) {
     <div className="Waveform" ref={componentRef}>
       <div className="Waveform__content-container" ref={parentRef}>
         <canvas className="Waveform__canvas" ref={canvasRef}></canvas>
-        <WaveformPositioning parentRef={parentRef} />
-        <ZoomedWaveforms
-          parentRef={componentRef}
-          waveform={waveform ? waveform : null}
-          id="1"
-        />
+        {waveform ? (
+          <HandleZoom
+            waveform={waveform}
+            parentRef={componentRef}
+            trackId="1"
+          />
+        ) : null}
+        <WaveformPositioning parentRef={componentRef} />
       </div>
-      {waveform ? (
-        <Canvas parentRef={parentRef} waveform={waveform} />
-      ) : (
-        <div></div>
-      )}
     </div>
   );
 }

@@ -75,5 +75,5 @@ export default function WaveformPositioning({
     [zoomLevel, mouse]
   );
 
-  return <div></div>;
+  return null;
 }
