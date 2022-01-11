@@ -2,12 +2,16 @@ import { configureStore } from "@reduxjs/toolkit";
 import waveformStateReducer from "./slices/waveformStateSlice";
 import waveformIdsReducer from "./slices/waveformIdsSlice";
 import zoomLevelReducer from "./slices/zoomLevelSlice";
+import sequencerLengthSlice from "./slices/sequencerLengthSlice";
+import scrollPositionSlice from "./slices/scrollPositionSlice";
 
 export const store = configureStore({
   reducer: {
     waveformStates: waveformStateReducer,
     waveformIds: waveformIdsReducer,
     zoomLevel: zoomLevelReducer,
+    sequencerLength: sequencerLengthSlice,
+    scrollPosition: scrollPositionSlice,
   },
 });
 

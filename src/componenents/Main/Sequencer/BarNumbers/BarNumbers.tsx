@@ -1,66 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./BarNumbers.scss";
 import { useAppSelector } from "../../../../redux/hooks";
-import { convertRemToPixels } from "../../../../utils/utils";
 import {
-  useCreateRefs,
-  pixelsPerBar,
-  drawLine,
-  drawText,
   lineWidth,
-  minimumLineSpacing,
   font,
   strokeStyle,
   fillStyle,
   applyCtxProperties,
-  setPixelsPerLine,
+  createCanvases,
+  CanvasRefObj,
+  calculateSequencerLengthPx,
+  populateCanvasBarNumbers,
 } from "../../../../utils/canvas";
 
 export default function BarNumbers() {
-  const [canvasRef, parentRef] = useCreateRefs();
+  const [canvases, setCanvases] = useState<JSX.Element[]>([]);
+  const parentRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const zoomLevel = useAppSelector((state) => state.zoomLevel.zoomLevel);
+  const sequencerLengthBars = useAppSelector(
+    (state) => state.sequencerLength.length
+  );
+  const sequencerLengthPx = calculateSequencerLengthPx(
+    sequencerLengthBars,
+    174,
+    zoomLevel
+  );
 
-  function populateCanvas(
-    canvas: HTMLCanvasElement,
-    ctx: CanvasRenderingContext2D,
-    zoomLevel: number
-  ): void {
-    const pixels_per_bar = pixelsPerBar(174, zoomLevel);
-    const pixels_per_line = setPixelsPerLine(
-      pixels_per_bar,
-      minimumLineSpacing
-    );
-    const barToLineRatio = pixels_per_line / pixels_per_bar;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let count = 1;
-    ctx.beginPath();
-    for (let i = 0; i < canvas.width; i += pixels_per_line) {
-      drawLine(ctx, i + 0.5, 0, canvas.height);
-      drawText(ctx, i + 0.5, canvas.height / 3, count + "");
-      const pixelsPerSubdividingLine = pixels_per_line / 4;
-      drawLine(
-        ctx,
-        i + pixelsPerSubdividingLine + 0.5,
-        canvas.height,
-        canvas.height / 1.5
-      );
-      drawLine(
-        ctx,
-        i + pixelsPerSubdividingLine * 2 + 0.5,
-        canvas.height,
-        canvas.height / 1.5
-      );
-      drawLine(
-        ctx,
-        i + pixelsPerSubdividingLine * 3 + 0.5,
-        canvas.height,
-        canvas.height / 1.5
-      );
-      count += barToLineRatio;
-    }
+  const canvasRefObj = useRef<CanvasRefObj>({});
 
-    ctx.stroke();
-  }
+  // const canvases = createCanvases(canvasRef, calcular);
+  useEffect(function () {
+    setCanvases(createCanvases(canvasRefObj, sequencerLengthPx));
+  }, []);
 
   useEffect(function () {
     const parent = parentRef.current!;
@@ -69,7 +41,7 @@ export default function BarNumbers() {
     canvas.height = parent.offsetHeight;
     const ctx = canvas.getContext("2d")!;
     applyCtxProperties(ctx, { font, lineWidth, strokeStyle, fillStyle });
-    populateCanvas(canvas, ctx, zoomLevel);
+    populateCanvasBarNumbers(canvas, zoomLevel);
   }, []);
 
   useEffect(
@@ -77,7 +49,7 @@ export default function BarNumbers() {
       const canvas = canvasRef.current!;
       const ctx = canvas.getContext("2d")!;
 
-      populateCanvas(canvas, ctx, zoomLevel);
+      populateCanvasBarNumbers(canvas, zoomLevel);
     },
     [zoomLevel]
   );

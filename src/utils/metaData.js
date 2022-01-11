@@ -5,8 +5,7 @@ export async function getMetaData() {
   const response = await fetch(audioFile);
   const blob = await response.blob();
   const file = new File([blob], "audio1.mp3", blob);
-  console.log(file);
-  var parser = mm(file, function (err, metadata) {
+  const parser = mm(file, function (err, metadata) {
     if (err) throw err;
     console.log(metadata);
   });

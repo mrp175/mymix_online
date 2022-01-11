@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import "./Waveform.scss";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { generateWaveform, pixelsPerBar } from "../../utils/canvas";
+import { pixelsPerBar } from "../../utils/canvas";
 import { loadAudioFile } from "../../utils/loadAudioFile";
 import WaveformData from "waveform-data";
-import WaveformPositioning from "./WaveformPositioning/WaveformPositioning";
+import HandleDrag from "./HandleDrag/HandleDrag";
 import HandleZoom from "./HandleZoom/HandleZoom";
+import { barsPerSecond } from "../../utils/canvas";
 
 export default function Waveform({ id }: { id: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,45 +28,17 @@ export default function Waveform({ id }: { id: string }) {
   // Load audio file and handle user input to move waveforms along the sequencer
   useEffect(function () {
     loadAudioFile(setWaveform);
-    // handleUserInput(canvasRef, componentRef, id, zoomLevelRef, dispatch);
   }, []);
 
   useEffect(
     function () {
       if (waveform) {
-        const canvas = canvasRef.current!;
+        const length = waveform.resample({ scale: zoomLevel }).length;
         const parent = componentRef.current!;
-        // draw waveform only after zoom level is no longer being changed and click has been released. Prevents too many resamples of the WaveformData object and canvas redraws.
-        if (!zoomMouseDown) {
-          parent.style.width = waveform.length + "px";
-          canvas.style.opacity = "0";
-          const zoomedWaveform = waveform.resample({ scale: zoomLevel });
-          generateWaveform(
-            canvasRef,
-            componentRef,
-            zoomedWaveform,
-            0,
-            1,
-            0,
-            10000
-          );
-        }
-        //Hide waveform if zoom level is currently being changed. Displays ZoomedWaveforms component instead.
-        if (zoomMouseDown) {
-          canvas.style.opacity = "0";
-        }
+        parent.style.width = length + "px";
       }
     },
-    [waveform, zoomMouseDown, zoomLevel]
-  );
-
-  //scale waveform vertically to visually display changes in gain
-  useEffect(
-    function () {
-      const canvas = canvasRef.current!;
-      canvas.style.transform = `scaleY(${gain})`;
-    },
-    [gain]
+    [zoomLevel]
   );
 
   //Positions waveform at correct bar when changing zoom.
@@ -95,7 +68,6 @@ export default function Waveform({ id }: { id: string }) {
   return (
     <div className="Waveform" ref={componentRef}>
       <div className="Waveform__content-container" ref={parentRef}>
-        <canvas className="Waveform__canvas" ref={canvasRef}></canvas>
         {waveform ? (
           <HandleZoom
             waveform={waveform}
@@ -103,7 +75,7 @@ export default function Waveform({ id }: { id: string }) {
             trackId="1"
           />
         ) : null}
-        <WaveformPositioning parentRef={componentRef} />
+        <HandleDrag parentRef={componentRef} />
       </div>
     </div>
   );

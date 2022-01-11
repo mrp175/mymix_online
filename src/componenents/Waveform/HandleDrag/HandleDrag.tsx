@@ -14,7 +14,7 @@ import { setPosition } from "../../../redux/slices/waveformStateSlice";
 import { addGenericEventListener } from "../../../utils/utils";
 import { defaultMouseState } from "../../../utils/mouseInputs";
 
-export default function WaveformPositioning({
+export default function HandlePosition({
   parentRef,
 }: {
   parentRef: React.RefObject<HTMLDivElement>;

@@ -23,7 +23,7 @@ export default function ZoomControl() {
   return (
     <div className="ZoomControl">
       <ZoomSlider
-        init={0.3}
+        init={1}
         max={1}
         min={0}
         style={{ mainAxisLength: 15, crossAxisLength: 2 }}

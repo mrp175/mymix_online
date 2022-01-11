@@ -1,25 +1,32 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import "./TrackLane.scss";
 import { useAppSelector } from "../../../../redux/hooks";
 import {
-  useCreateRefs,
   pixelsPerBar,
   drawLine,
-  drawText,
   lineWidth,
   minimumLineSpacing,
-  font,
   strokeStyle,
-  fillStyle,
   applyCtxProperties,
   setPixelsPerLine,
+  calculateSequencerLengthPx,
 } from "../../../../utils/canvas";
 import Waveform from "../../../Waveform/Waveform";
 
 export default function TrackLane() {
-  const [canvasRef, parentRef] = useCreateRefs();
+  const parentRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const ids = useAppSelector((state) => state.waveformIds);
   const zoomLevel = useAppSelector((state) => state.zoomLevel.zoomLevel);
+  const sequencerLengthBars = useAppSelector(
+    (state) => state.sequencerLength.length
+  );
+
+  const sequencerLengthPx = calculateSequencerLengthPx(
+    sequencerLengthBars,
+    174,
+    zoomLevel
+  );
 
   function populateCanvas(
     canvas: HTMLCanvasElement,

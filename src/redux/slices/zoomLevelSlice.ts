@@ -5,7 +5,7 @@ interface ZoomLevelState {
   mouseDown: boolean;
 }
 
-const initialState: ZoomLevelState = { zoomLevel: 128, mouseDown: false };
+const initialState: ZoomLevelState = { zoomLevel: 30000, mouseDown: false };
 
 export const zoomLevelStateSlice = createSlice({
   name: "Zoom Level",

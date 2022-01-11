@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { getVariableStyle, convertRemToPixels, handleRangeBias } from "./utils";
 import WaveformData from "waveform-data";
 
@@ -123,7 +123,7 @@ export function addResizeEventListeners(
 }
 
 //draw waveform to canvas
-export function generateWaveform2(
+export function generateWaveform(
   canvas: HTMLCanvasElement,
   parentRef: React.RefObject<HTMLDivElement>,
   waveform: WaveformData,
@@ -138,7 +138,8 @@ export function generateWaveform2(
     canvas.width = waveform.length - startSample;
   }
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-  ctx.strokeStyle = "#164664";
+  // ctx.strokeStyle = "#164664";
+  ctx.strokeStyle = "white";
   ctx.lineWidth = 1;
   ctx.fillStyle = "white";
   const channel = waveform.channel(0);
@@ -166,87 +167,6 @@ export function generateWaveform2(
   ctx.fill();
 }
 
-// export function generateInitialWaveform(
-//   canvasRef: React.RefObject<HTMLCanvasElement>,
-//   parentRef: React.RefObject<HTMLDivElement>,
-//   waveform: WaveformData
-// ) {
-//   let hasRun = false;
-//   if (!hasRun) {
-//     generateWaveform(canvasRef, parentRef, waveform);
-//     return waveform.toArrayBuffer();
-//   }
-// }
-
-//draw waveform to canvas
-export function generateWaveform(
-  canvasRef: React.RefObject<HTMLCanvasElement>,
-  parentRef: React.RefObject<HTMLDivElement>,
-  waveform: WaveformData,
-  startOffset: number = 0,
-  gain: number = 1,
-  startSample: number = 0,
-  length: number = 10000
-) {
-  const canvas = canvasRef.current as HTMLCanvasElement;
-  canvas.height = parentRef.current?.offsetHeight as number;
-  canvas.width = 20000;
-  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-  ctx.strokeStyle = "#164664";
-  ctx.lineWidth = 1;
-  // ctx.fillStyle = "rgb(86,167,219)";
-  // ctx.fillRect(0, 0, waveform.length, canvas.height);
-  // ctx.fillStyle = "#164664";
-  ctx.fillStyle = "white";
-  const channel = waveform.channel(0);
-  ctx.beginPath();
-
-  if (length > waveform.length) length = waveform.length;
-
-  // for (let x = startOffset; x < length; x += 1) {
-  //   let val = channel.max_sample(x);
-  //   // val = handleRangeBias(val / 127, 0.2, "exp") * 127;
-  //   ctx.rect(
-  //     x - startOffset + 0.5,
-  //     scaleY(val, canvas.height, gain),
-  //     1,
-  //     canvas.height - scaleY(val, canvas.height, gain) * 2
-  //   );
-  // }
-
-  // ctx.stroke();
-  // ctx.fill();
-  // Loop forwards, drawing the upper half of the waveform
-  for (let x = startSample; x < waveform.length; x++) {
-    //max possible val = 127
-    const val = channel.max_sample(x);
-    ctx.lineTo(x + 0.5, scaleY(val, canvas.height, gain) + 0.5);
-  }
-
-  // Loop backwards, drawing the lower half of the waveform
-  for (let x = waveform.length - 1; x >= startSample; x--) {
-    const val = channel.min_sample(x);
-
-    ctx.lineTo(x + 0.5, scaleY(val, canvas.height, gain) + 0.5);
-  }
-
-  ctx.closePath();
-  ctx.stroke();
-  ctx.fill();
-}
-
-export function generateInitialWaveform(
-  canvasRef: React.RefObject<HTMLCanvasElement>,
-  parentRef: React.RefObject<HTMLDivElement>,
-  waveform: WaveformData
-) {
-  let hasRun = false;
-  if (!hasRun) {
-    generateWaveform(canvasRef, parentRef, waveform);
-    return waveform.toArrayBuffer();
-  }
-}
-
 function scaleY(amplitude: number, height: number, gain: number): number {
   const range = 256;
   const offset = 128;
@@ -269,4 +189,82 @@ export function pixelsPerSecond(zoomLevel: number): number {
 
 export function pixelsPerBar(bpm: number, zoomLevel: number): number {
   return pixelsPerSecond(zoomLevel) / barsPerSecond(bpm);
+}
+
+export function calculateSequencerLengthPx(
+  lengthInBars: number,
+  bpm: number,
+  zoomLevel: number
+): number {
+  return (lengthInBars + 50) * pixelsPerBar(bpm, zoomLevel);
+}
+
+export interface CanvasRefObj {
+  [key: string]: HTMLCanvasElement | null;
+}
+
+export function createCanvases(
+  refObject: React.MutableRefObject<CanvasRefObj>,
+  total: WaveformData | number,
+  start: number = 0
+): JSX.Element[] {
+  if (typeof total !== "number") {
+    total = total.length;
+  }
+  let html: JSX.Element[] = [];
+  let i = start / 10000;
+  let length = start;
+  do {
+    const string = "_" + i;
+    const canvas = (
+      <canvas
+        key={string}
+        ref={(element) => (refObject.current[string] = element)}
+        className="canvas"
+      ></canvas>
+    );
+    html.push(canvas);
+    i += 1;
+    length += 10000;
+  } while (length < total);
+  return html;
+}
+
+export function populateCanvasBarNumbers(
+  canvas: HTMLCanvasElement,
+  zoomLevel: number
+): void {
+  const pixels_per_bar = pixelsPerBar(174, zoomLevel);
+  const pixels_per_line = setPixelsPerLine(pixels_per_bar, minimumLineSpacing);
+  const barToLineRatio = pixels_per_line / pixels_per_bar;
+  const ctx = canvas.getContext("2d")!;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let count = 1;
+  ctx.beginPath();
+  for (let i = 0; i < canvas.width; i += pixels_per_line) {
+    drawLine(ctx, i + 0.5, 0, canvas.height);
+    drawText(ctx, i + 0.5, canvas.height / 3, count + "");
+    const pixelsPerSubdividingLine = pixels_per_line / 4;
+    drawLine(
+      ctx,
+      i + pixelsPerSubdividingLine + 0.5,
+      canvas.height,
+      canvas.height / 1.5
+    );
+    drawLine(
+      ctx,
+      i + pixelsPerSubdividingLine * 2 + 0.5,
+      canvas.height,
+      canvas.height / 1.5
+    );
+    drawLine(
+      ctx,
+      i + pixelsPerSubdividingLine * 3 + 0.5,
+      canvas.height,
+      canvas.height / 1.5
+    );
+    count += barToLineRatio;
+  }
+
+  ctx.stroke();
 }
