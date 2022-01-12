@@ -5,7 +5,8 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { addWaveform } from "../../redux/slices/waveformStateSlice";
 import { addId } from "../../redux/slices/waveformIdsSlice";
 import TrackControl from "../TrackControl/TrackControl";
-import BarNumbers from "./Sequencer/BarNumbers/BarNumbers";
+import BarNumbersAndLines from "./Sequencer/BarNumbersAndLines/BarNumbersAndLines";
+import { drawBarNumbers } from "../../utils/canvas";
 import TrackLane from "./Sequencer/TrackLane/TrackLane";
 import { pixelsPerBar } from "../../utils/canvas";
 import { setScrollPosition } from "../../redux/slices/scrollPositionSlice";
@@ -72,7 +73,11 @@ export default function Main() {
       <div className="sequencer" ref={sequencerRef} onScroll={handleScroll}>
         <div></div>
         <div>
-          <BarNumbers />
+          <BarNumbersAndLines
+            callback={drawBarNumbers}
+            canvasClassName="BarNumbers__canvas"
+            componentClassName="BarNumbers"
+          />
           <div className="track-container" id="track-1">
             <TrackLane></TrackLane>
           </div>

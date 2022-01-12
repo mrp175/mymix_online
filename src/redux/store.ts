@@ -4,6 +4,7 @@ import waveformIdsReducer from "./slices/waveformIdsSlice";
 import zoomLevelReducer from "./slices/zoomLevelSlice";
 import sequencerLengthSlice from "./slices/sequencerLengthSlice";
 import scrollPositionSlice from "./slices/scrollPositionSlice";
+import barNumberDataSlice from "./slices/barNumberDataSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     zoomLevel: zoomLevelReducer,
     sequencerLength: sequencerLengthSlice,
     scrollPosition: scrollPositionSlice,
+    barNumberData: barNumberDataSlice,
   },
 });
 

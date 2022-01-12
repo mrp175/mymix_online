@@ -1,33 +1,46 @@
 import { useState, useEffect, useRef } from "react";
-import "./BarNumbers.scss";
+import "./BarNumbersAndLines.scss";
 import { useAppSelector } from "../../../../redux/hooks";
 import {
   createCanvases,
   CanvasRefObj,
   calculateSequencerLengthPx,
-  drawBarNumbers,
 } from "../../../../utils/canvas";
+import { BarNumberDataState } from "../../../../redux/slices/barNumberDataSlice";
 
-export default function BarNumbers() {
+export default function BarNumbersAndLines({
+  componentClassName,
+  canvasClassName,
+  callback,
+}: {
+  componentClassName: string;
+  canvasClassName: string;
+  callback: (
+    refObj: React.MutableRefObject<CanvasRefObj>,
+    parentRef: HTMLDivElement,
+    barNumberData: BarNumberDataState[][],
+    zoomLevel: number
+  ) => void;
+}) {
   const [canvases, setCanvases] = useState<JSX.Element[]>([]);
   const componentRef = useRef<HTMLDivElement>(null);
   const canvasRefObj = useRef<CanvasRefObj>({});
   const { zoomLevel, mouseDown } = useAppSelector((state) => state.zoomLevel);
-  const scrollPosition = useAppSelector((state) => state.scrollPosition);
   const sequencerLengthBars = useAppSelector(
     (state) => state.sequencerLength.length
   );
+  const barNumberData = useAppSelector((state) => state.barNumberData);
   let sequencerLengthPx = calculateSequencerLengthPx(
     sequencerLengthBars,
     174,
     zoomLevel
   );
 
-  sequencerLengthPx *= 5;
-
   // Create required canvases based on sequencer length
   useEffect(function () {
-    setCanvases(createCanvases(canvasRefObj, 0, 0, "BarNumbers__canvas"));
+    setCanvases(
+      createCanvases(canvasRefObj, sequencerLengthPx, 0, canvasClassName)
+    );
   }, []);
 
   useEffect(
@@ -40,7 +53,7 @@ export default function BarNumbers() {
             canvasRefObj,
             canvasesNeeded * 10000,
             state.length * 10000,
-            "BarNumbers__canvas"
+            canvasClassName
           );
           const newState = [...state, ...newCanvases];
           return newState;
@@ -54,14 +67,14 @@ export default function BarNumbers() {
     function () {
       const component = componentRef.current;
       if (component) {
-        drawBarNumbers(canvasRefObj, component, sequencerLengthPx, zoomLevel);
+        callback(canvasRefObj, component, barNumberData.value, zoomLevel);
       }
     },
-    [zoomLevel, canvases, mouseDown]
+    [zoomLevel, canvases, mouseDown, barNumberData]
   );
 
   return (
-    <div className="BarNumbers" ref={componentRef}>
+    <div className={componentClassName} ref={componentRef}>
       {canvases}
     </div>
   );
