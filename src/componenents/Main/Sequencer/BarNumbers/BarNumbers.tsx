@@ -1,62 +1,68 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./BarNumbers.scss";
 import { useAppSelector } from "../../../../redux/hooks";
 import {
-  lineWidth,
-  font,
-  strokeStyle,
-  fillStyle,
-  applyCtxProperties,
   createCanvases,
   CanvasRefObj,
   calculateSequencerLengthPx,
-  populateCanvasBarNumbers,
+  drawBarNumbers,
 } from "../../../../utils/canvas";
 
 export default function BarNumbers() {
   const [canvases, setCanvases] = useState<JSX.Element[]>([]);
-  const parentRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const zoomLevel = useAppSelector((state) => state.zoomLevel.zoomLevel);
+  const componentRef = useRef<HTMLDivElement>(null);
+  const canvasRefObj = useRef<CanvasRefObj>({});
+  const { zoomLevel, mouseDown } = useAppSelector((state) => state.zoomLevel);
+  const scrollPosition = useAppSelector((state) => state.scrollPosition);
   const sequencerLengthBars = useAppSelector(
     (state) => state.sequencerLength.length
   );
-  const sequencerLengthPx = calculateSequencerLengthPx(
+  let sequencerLengthPx = calculateSequencerLengthPx(
     sequencerLengthBars,
     174,
     zoomLevel
   );
 
-  const canvasRefObj = useRef<CanvasRefObj>({});
+  sequencerLengthPx *= 5;
 
-  // const canvases = createCanvases(canvasRef, calcular);
+  // Create required canvases based on sequencer length
   useEffect(function () {
-    setCanvases(createCanvases(canvasRefObj, sequencerLengthPx));
-  }, []);
-
-  useEffect(function () {
-    const parent = parentRef.current!;
-    const canvas = canvasRef.current!;
-    canvas.width = parent.offsetWidth;
-    canvas.height = parent.offsetHeight;
-    const ctx = canvas.getContext("2d")!;
-    applyCtxProperties(ctx, { font, lineWidth, strokeStyle, fillStyle });
-    populateCanvasBarNumbers(canvas, zoomLevel);
+    setCanvases(createCanvases(canvasRefObj, 0, 0, "BarNumbers__canvas"));
   }, []);
 
   useEffect(
+    //Add additional canvases when sequencer length increases
     function () {
-      const canvas = canvasRef.current!;
-      const ctx = canvas.getContext("2d")!;
-
-      populateCanvasBarNumbers(canvas, zoomLevel);
+      const canvasesNeeded = Math.ceil(sequencerLengthPx / 10000);
+      if (canvasesNeeded > canvases.length) {
+        setCanvases((state) => {
+          const newCanvases = createCanvases(
+            canvasRefObj,
+            canvasesNeeded * 10000,
+            state.length * 10000,
+            "BarNumbers__canvas"
+          );
+          const newState = [...state, ...newCanvases];
+          return newState;
+        });
+      }
     },
-    [zoomLevel]
+    [sequencerLengthPx]
+  );
+
+  useEffect(
+    function () {
+      const component = componentRef.current;
+      if (component) {
+        drawBarNumbers(canvasRefObj, component, sequencerLengthPx, zoomLevel);
+      }
+    },
+    [zoomLevel, canvases, mouseDown]
   );
 
   return (
-    <div className="BarNumbers" ref={parentRef}>
-      <canvas className="BarNumbers__canvas" ref={canvasRef}></canvas>
+    <div className="BarNumbers" ref={componentRef}>
+      {canvases}
     </div>
   );
 }

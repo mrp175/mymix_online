@@ -7,7 +7,6 @@ import { addId } from "../../redux/slices/waveformIdsSlice";
 import TrackControl from "../TrackControl/TrackControl";
 import BarNumbers from "./Sequencer/BarNumbers/BarNumbers";
 import TrackLane from "./Sequencer/TrackLane/TrackLane";
-import BarNumbers2 from "./Sequencer/BarNumbers/BarNumbers2";
 import { pixelsPerBar } from "../../utils/canvas";
 import { setScrollPosition } from "../../redux/slices/scrollPositionSlice";
 
@@ -21,11 +20,12 @@ export default function Main() {
   function handleScroll(): void {
     const sequencer = sequencerRef.current;
     if (sequencer && !mouseDown) {
-      const left = (sequencer.scrollLeft - 16) / pixels_per_bar;
-      const right =
-        (sequencer.scrollLeft + sequencer.offsetWidth) / pixels_per_bar;
-      console.log(left);
-      dispatch(setScrollPosition({ left, right }));
+      const barsLeft = (sequencer.scrollLeft - 16) / pixels_per_bar;
+      const barsRight =
+        (sequencer.scrollLeft + sequencer.offsetWidth - 16) / pixels_per_bar;
+      const pxLeft = sequencer.scrollLeft;
+      const pxRight = pxLeft + sequencer.offsetWidth;
+      dispatch(setScrollPosition({ barsLeft, barsRight, pxLeft, pxRight }));
     }
   }
 
@@ -33,7 +33,16 @@ export default function Main() {
     function () {
       const sequencer = sequencerRef.current;
       if (sequencer) {
-        sequencer.scrollLeft = scrollPosition.left * pixels_per_bar + 16;
+        let pxLeft = scrollPosition.barsLeft * pixels_per_bar + 16;
+        if (scrollPosition.barsLeft < 0) {
+          pxLeft = scrollPosition.pxLeft;
+        }
+        sequencer.scrollLeft = pxLeft;
+        const newScrollState = { ...scrollPosition };
+        newScrollState.pxLeft = pxLeft;
+        newScrollState.pxRight = pxLeft + sequencer.offsetWidth;
+
+        dispatch(setScrollPosition(newScrollState));
       }
     },
     [zoomLevel]
@@ -64,7 +73,6 @@ export default function Main() {
         <div></div>
         <div>
           <BarNumbers />
-          {/* <BarNumbers2 /> */}
           <div className="track-container" id="track-1">
             <TrackLane></TrackLane>
           </div>

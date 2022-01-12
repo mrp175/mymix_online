@@ -1,24 +1,35 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ScrollPositionState {
-  left: number;
-  right: number;
+  barsLeft: number;
+  barsRight: number;
+  pxLeft: number;
+  pxRight: number;
 }
 
 interface SetState {
-  left: number;
-  right: number;
+  barsLeft: number;
+  barsRight: number;
+  pxLeft: number;
+  pxRight: number;
 }
 
-const initialState: ScrollPositionState = { left: 0, right: 0 };
+const initialState: ScrollPositionState = {
+  barsLeft: 0,
+  barsRight: 0,
+  pxLeft: 0,
+  pxRight: 0,
+};
 
 export const scrollPositionSlice = createSlice({
   name: "Sroll Position",
   initialState,
   reducers: {
     setScrollPosition: (state, action: PayloadAction<SetState>) => {
-      state.left = action.payload.left;
-      state.right = action.payload.right;
+      state.barsLeft = action.payload.barsLeft;
+      state.barsRight = action.payload.barsRight;
+      state.pxLeft = action.payload.pxLeft;
+      state.pxRight = action.payload.pxRight;
     },
   },
 });

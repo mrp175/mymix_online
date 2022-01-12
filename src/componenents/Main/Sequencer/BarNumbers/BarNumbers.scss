@@ -1,6 +1,7 @@
 .BarNumbers {
   width: calc(100vw - 19.1rem);
   height: 2rem;
+  position: relative;
 
   &__canvas {
     background: linear-gradient(
@@ -8,5 +9,8 @@
       var(--dark-main) 50%,
       var(--dark-alt) 50%
     );
+    position: absolute;
+    left: 0;
+    top: 0;
   }
 }

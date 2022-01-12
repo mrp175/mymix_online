@@ -206,7 +206,8 @@ export interface CanvasRefObj {
 export function createCanvases(
   refObject: React.MutableRefObject<CanvasRefObj>,
   total: WaveformData | number,
-  start: number = 0
+  start: number = 0,
+  className: string = "canvas"
 ): JSX.Element[] {
   if (typeof total !== "number") {
     total = total.length;
@@ -220,7 +221,7 @@ export function createCanvases(
       <canvas
         key={string}
         ref={(element) => (refObject.current[string] = element)}
-        className="canvas"
+        className={className}
       ></canvas>
     );
     html.push(canvas);
@@ -232,16 +233,22 @@ export function createCanvases(
 
 export function populateCanvasBarNumbers(
   canvas: HTMLCanvasElement,
-  zoomLevel: number
+  parent: HTMLDivElement,
+  zoomLevel: number,
+  startPos: number = 0,
+  endPos: number = 10000
 ): void {
+  canvas.width = 10000;
+  canvas.height = parent.offsetHeight;
   const pixels_per_bar = pixelsPerBar(174, zoomLevel);
   const pixels_per_line = setPixelsPerLine(pixels_per_bar, minimumLineSpacing);
   const barToLineRatio = pixels_per_line / pixels_per_bar;
   const ctx = canvas.getContext("2d")!;
+  applyCtxProperties(ctx, { font, lineWidth, strokeStyle, fillStyle });
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   let count = 1;
   ctx.beginPath();
-  for (let i = 0; i < canvas.width; i += pixels_per_line) {
+  for (let i = startPos; i < endPos; i += pixels_per_line) {
     drawLine(ctx, i + 0.5, 0, canvas.height);
     drawText(ctx, i + 0.5, canvas.height / 3, count + "");
     const pixelsPerSubdividingLine = pixels_per_line / 4;
@@ -267,4 +274,83 @@ export function populateCanvasBarNumbers(
   }
 
   ctx.stroke();
+}
+
+// Create array that contains where to draw each bar line on each canvas, and what bar number should be written next to it
+function createBarNumberData(
+  endPos: number,
+  zoomLevel: number
+): { count: number; currentPos: number }[][] {
+  const pixels_per_bar = pixelsPerBar(174, zoomLevel);
+  const pixels_per_line = setPixelsPerLine(pixels_per_bar, minimumLineSpacing);
+  const barToLineRatio = pixels_per_line / pixels_per_bar;
+  const result: { count: number; currentPos: number }[][] = [[]];
+  let ref = 0;
+  let count = 1;
+  let canvasOffset = 0;
+  for (let i = 0; i < endPos; i += pixels_per_line) {
+    const currentRef = Math.floor(i / 10000);
+    if (currentRef !== ref) {
+      ref = currentRef;
+      result.push([]);
+      canvasOffset -= 10000;
+    }
+    result[ref].push({ count, currentPos: i + canvasOffset });
+    count += barToLineRatio;
+  }
+  return result;
+}
+
+//Draws bar numbers and lines using result from bar number data
+export function drawBarNumbers(
+  refObj: React.MutableRefObject<CanvasRefObj>,
+  parentRef: HTMLDivElement,
+  sequencerLengthPx: number,
+  zoomLevel: number
+): void {
+  const arr = createBarNumberData(sequencerLengthPx, zoomLevel);
+  const pixels_per_bar = pixelsPerBar(174, zoomLevel);
+  const pixels_per_line = setPixelsPerLine(pixels_per_bar, minimumLineSpacing);
+  const pixelsPerSubdividingLine = pixels_per_line / 4;
+  for (let i = 0; i < arr.length; i += 1) {
+    const canvas = refObj.current["_" + i]!;
+    if (canvas) {
+      canvas.width = 10000;
+      canvas.height = parentRef.offsetHeight;
+      canvas.style.left = 10000 * i + "px";
+      const ctx = canvas.getContext("2d")!;
+      applyCtxProperties(ctx, { font, lineWidth, strokeStyle, fillStyle });
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      for (let j = 0; j < arr[i].length; j += 1) {
+        drawLine(ctx, arr[i][j].currentPos + 0.5, 0, canvas.height);
+        drawText(
+          ctx,
+          arr[i][j].currentPos + 0.5 + 3,
+          canvas.height / 3,
+          arr[i][j].count + ""
+        );
+        drawLine(
+          ctx,
+          arr[i][j].currentPos + pixelsPerSubdividingLine + 0.5,
+          canvas.height,
+          canvas.height / 1.5
+        );
+        drawLine(
+          ctx,
+          arr[i][j].currentPos + pixelsPerSubdividingLine * 2 + 0.5,
+          canvas.height,
+          canvas.height / 1.5
+        );
+        drawLine(
+          ctx,
+          arr[i][j].currentPos + pixelsPerSubdividingLine * 3 + 0.5,
+          canvas.height,
+          canvas.height / 1.5
+        );
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
 }
