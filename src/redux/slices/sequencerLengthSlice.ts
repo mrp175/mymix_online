@@ -8,7 +8,7 @@ interface SetState {
   value: number;
 }
 
-const initialState: TotalBars = { length: 50 };
+const initialState: TotalBars = { length: 250 };
 
 export const sequencerLengthSlice = createSlice({
   name: "Sequencer length",

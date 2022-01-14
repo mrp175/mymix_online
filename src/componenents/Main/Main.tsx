@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Main.scss";
 import "../TrackControl/TrackControl";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -12,6 +12,7 @@ import { pixelsPerBar } from "../../utils/canvas";
 import { setScrollPosition } from "../../redux/slices/scrollPositionSlice";
 
 export default function Main() {
+  const [state, setState] = useState("");
   const dispatch = useAppDispatch();
   const sequencerRef = useRef<HTMLDivElement>(null);
   const { zoomLevel, mouseDown } = useAppSelector((state) => state.zoomLevel);
@@ -20,6 +21,7 @@ export default function Main() {
 
   function handleScroll(): void {
     const sequencer = sequencerRef.current;
+    setState("re-redener");
     if (sequencer && !mouseDown) {
       const barsLeft = (sequencer.scrollLeft - 16) / pixels_per_bar;
       const barsRight =
@@ -42,7 +44,6 @@ export default function Main() {
         const newScrollState = { ...scrollPosition };
         newScrollState.pxLeft = pxLeft;
         newScrollState.pxRight = pxLeft + sequencer.offsetWidth;
-
         dispatch(setScrollPosition(newScrollState));
       }
     },
