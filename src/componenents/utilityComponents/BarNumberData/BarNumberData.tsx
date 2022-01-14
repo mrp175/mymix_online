@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import {
   setBarNumberData,
   setLoaded,
-} from "../../redux/slices/barNumberDataSlice";
+} from "../../../redux/slices/barNumberDataSlice";
 import {
   createBarNumberData,
   calculateSequencerLengthPx,
-} from "../../utils/canvas";
+} from "../../../utils/canvas";
 
 export default function BarNumberData() {
   const { zoomLevel } = useAppSelector((state) => state.zoomLevel);

@@ -1,0 +1,26 @@
+.LoadingAnimation {
+  display: grid;
+  grid-template-columns: repeat(21, auto);
+  grid-gap: 5px;
+
+  &__container {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  &__bar {
+    height: 100px;
+    width: 8px;
+    border-radius: 2px;
+    background: #a7bed3;
+    transition: 0.5s ease;
+  }
+}
