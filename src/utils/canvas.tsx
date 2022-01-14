@@ -310,6 +310,7 @@ export function drawBarNumbers(
   }
 }
 
+//Draw bar lines
 export function drawBarLines(
   refObj: React.MutableRefObject<CanvasRefObj>,
   parentRef: HTMLDivElement,

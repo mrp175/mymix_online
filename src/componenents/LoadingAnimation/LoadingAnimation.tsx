@@ -47,7 +47,6 @@ export default function LoadingAnimation() {
     function () {
       if (divRefObj.current["_1"]) {
         intervalRef.current = setInterval(function () {
-          console.log("hello");
           animate(countRef, setCount, divRefObj);
         }, 200);
       }

@@ -1,26 +1,30 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TotalBars {
-  length: number;
+  lengthBars: number;
+  requiredLengthBars: number;
 }
 
 interface SetState {
   value: number;
 }
 
-const initialState: TotalBars = { length: 250 };
+const initialState: TotalBars = { lengthBars: 250, requiredLengthBars: 250 };
 
 export const sequencerLengthSlice = createSlice({
   name: "Sequencer length",
   initialState,
   reducers: {
-    changeLength: (state, action: PayloadAction<SetState>) => {
-      state.length = action.payload.value;
+    setLength: (state, action: PayloadAction<SetState>) => {
+      state.lengthBars = action.payload.value;
+    },
+    setRequiredLength: (state, action: PayloadAction<SetState>) => {
+      state.requiredLengthBars = action.payload.value;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { changeLength } = sequencerLengthSlice.actions;
+export const { setLength, setRequiredLength } = sequencerLengthSlice.actions;
 
 export default sequencerLengthSlice.reducer;

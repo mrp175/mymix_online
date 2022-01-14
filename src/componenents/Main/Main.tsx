@@ -75,7 +75,7 @@ export default function Main() {
         <div></div>
         <div>
           <BarNumbersAndLines
-            callback={drawBarNumbers}
+            drawToCanvas={drawBarNumbers}
             canvasClassName="BarNumbers__canvas"
             componentClassName="BarNumbers"
           />

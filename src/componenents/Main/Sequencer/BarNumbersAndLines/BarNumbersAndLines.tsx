@@ -11,11 +11,11 @@ import { BarNumberDataState } from "../../../../redux/slices/barNumberDataSlice"
 export default function BarNumbersAndLines({
   componentClassName,
   canvasClassName,
-  callback,
+  drawToCanvas,
 }: {
   componentClassName: string;
   canvasClassName: string;
-  callback: (
+  drawToCanvas: (
     refObj: React.MutableRefObject<CanvasRefObj>,
     parentRef: HTMLDivElement,
     barNumberData: BarNumberDataState[][],
@@ -67,7 +67,7 @@ export default function BarNumbersAndLines({
     function () {
       const component = componentRef.current;
       if (component) {
-        callback(canvasRefObj, component, barNumberData.value, zoomLevel);
+        drawToCanvas(canvasRefObj, component, barNumberData.value, zoomLevel);
       }
     },
     [zoomLevel, canvases, mouseDown, barNumberData]

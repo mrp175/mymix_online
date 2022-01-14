@@ -41,7 +41,7 @@ export default function TrackLane() {
   return (
     <div className="TrackLane" ref={componentRef}>
       <BarNumbersAndLines
-        callback={drawBarLines}
+        drawToCanvas={drawBarLines}
         canvasClassName="bar-lines__canvas"
         componentClassName="bar-lines"
       />

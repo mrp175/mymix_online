@@ -11,15 +11,15 @@ import {
 
 export default function BarNumberData() {
   const { zoomLevel } = useAppSelector((state) => state.zoomLevel);
-  const sequencerLengthBars = useAppSelector(
-    (state) => state.sequencerLength.length
+  const barsToBeDisplayed = useAppSelector(
+    (state) => state.sequencerLength.requiredLengthBars
   );
   const dispatch = useAppDispatch();
 
   useEffect(
     function () {
       const sequencerLengthPx = calculateSequencerLengthPx(
-        sequencerLengthBars,
+        barsToBeDisplayed,
         174,
         zoomLevel
       );
@@ -27,7 +27,7 @@ export default function BarNumberData() {
       dispatch(setBarNumberData(barNumberData));
       dispatch(setLoaded());
     },
-    [zoomLevel, sequencerLengthBars]
+    [zoomLevel, barsToBeDisplayed]
   );
 
   return null;
