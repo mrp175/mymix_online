@@ -21,6 +21,7 @@
     "sass": "^1.44.0",
     "typescript": "^4.5.2",
     "waveform-data": "^4.3.0",
+    "web-audio-beat-detector": "^8.1.27",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
