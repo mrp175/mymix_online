@@ -10,7 +10,6 @@ export const fillStyle = "#ffffff";
 export const minimumLineSpacing = 4;
 
 const remScale = 1;
-const textSize = remScale / 1.45; //this is what it will be in rem.
 export const defaultBarSpacing = 4; // This should scale with zoom.
 export const pixelsPerRem = convertRemToPixels(remScale);
 
@@ -43,9 +42,6 @@ export function applyCtxProperties(
     }
   }
 }
-
-const canvas = document.createElement("canvas");
-const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 // calculates the scale x transform required for the canvas overlay so that it matches the actual waveform zoom level. This works when applied with css scaling. Function is designed to prevet constant redraws to canvas and resampling of waveform zoom level.
 export function calculateScaleX(currentScale: number): number {

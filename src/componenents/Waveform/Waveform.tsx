@@ -1,28 +1,24 @@
 import { useEffect, useState, useRef } from "react";
 import "./Waveform.scss";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppSelector } from "../../redux/hooks";
 import { pixelsPerBar } from "../../utils/canvas";
 import { loadAudioFile } from "../../utils/loadAudioFile";
 import WaveformData from "waveform-data";
 import HandleDrag from "./HandleDrag/HandleDrag";
 import HandleZoom from "./HandleZoom/HandleZoom";
-import { barsPerSecond } from "../../utils/canvas";
 
 export default function Waveform({ id }: { id: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
   const componentRef = useRef<HTMLDivElement>(null);
 
   const [waveform, setWaveform] = useState<WaveformData | null>(null);
 
-  const { position, gain, startOffset } = useAppSelector(
+  const { position, startOffset } = useAppSelector(
     (state) => state.waveformStates[id]
   );
   const { zoomLevel } = useAppSelector((state) => state.zoomLevel);
-  const zoomMouseDown = useAppSelector((state) => state.zoomLevel.mouseDown);
 
   const zoomLevelRef = useRef(zoomLevel);
-  const dispatch = useAppDispatch();
   let pixels_per_bar = pixelsPerBar(174, zoomLevel);
 
   // Load audio file and handle user input to move waveforms along the sequencer

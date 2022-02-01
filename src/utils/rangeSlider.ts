@@ -1,10 +1,4 @@
-import {
-  convertRemToPixels,
-  handleRangeBias,
-  getVariableStyle,
-  mapNumberRange,
-  convertPixelsToRem,
-} from "./utils";
+import { handleRangeBias, mapNumberRange, convertPixelsToRem } from "./utils";
 import { MouseInput } from "./handleMouseInput";
 
 type SetValue = React.Dispatch<
@@ -86,8 +80,6 @@ export function handleMouseUp(
 }
 
 export function drawToCanvas(canvas: HTMLCanvasElement, interval: number) {
-  const accentColor = getVariableStyle("--accent-color");
-  const scale: number = convertRemToPixels(1);
   const ctx: CanvasRenderingContext2D = canvas.getContext("2d")!;
   ctx.lineWidth = 1;
   ctx.strokeStyle = "white";

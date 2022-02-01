@@ -12,7 +12,9 @@ import { pixelsPerBar } from "../../utils/canvas";
 import { setScrollPosition } from "../../redux/slices/scrollPositionSlice";
 
 export default function Main() {
+  /* eslint-disable */
   const [state, setState] = useState("");
+  /* eslint-enable */
   const dispatch = useAppDispatch();
   const sequencerRef = useRef<HTMLDivElement>(null);
   const { zoomLevel, mouseDown } = useAppSelector((state) => state.zoomLevel);

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useRef, useEffect, useState } from "react";
 import "./Dial.scss";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";

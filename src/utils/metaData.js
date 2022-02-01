@@ -1,3 +1,4 @@
+/* eslint-disable */
 import audioFile from "../audio-files/audio1.mp3";
 import mm from "musicmetadata";
 

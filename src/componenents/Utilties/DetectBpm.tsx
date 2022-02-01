@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useEffect } from "react";
 import { getAudioBuffer } from "../../utils/loadAudio";
 import { analyze, guess } from "web-audio-beat-detector";

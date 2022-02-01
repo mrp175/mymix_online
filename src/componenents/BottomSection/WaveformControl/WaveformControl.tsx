@@ -1,7 +1,7 @@
 import "./WaveformControl.scss";
 import Dial from "../../Dial/Dial";
 import VolumeSlider from "../../VolumeSlider/VolumeSlider";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { useAppDispatch } from "../../../redux/hooks";
 import { setGain } from "../../../redux/slices/waveformStateSlice";
 
 export default function WaveformControl() {

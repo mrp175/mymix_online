@@ -1,5 +1,3 @@
-import { AppDispatch } from "../redux/store";
-
 export interface MouseX {
   isDown: boolean;
   startX: number;

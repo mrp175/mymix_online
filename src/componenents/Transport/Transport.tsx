@@ -14,10 +14,10 @@ export default function Transport() {
         <div className="Transport__grid__center">
           <button className="button__track-forwards"></button>
           <button className="button__stop">
-            <img src={stop}></img>
+            <img src={stop} alt="stop icon"></img>
           </button>
           <button className="button__play-pause">
-            <img src={play}></img>
+            <img src={play} alt="play icon"></img>
           </button>
           <button className="button__track-backwards"></button>
         </div>
