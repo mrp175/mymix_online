@@ -1,8 +1,11 @@
 {
   "extends": [
     "react-app"
-  ],
+  ], 
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    "react-hooks/rules-of-hooks": "warn"
+    "no-console": "error", 
+    "no-unused-vars": "error"
   }
 }
