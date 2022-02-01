@@ -27,7 +27,7 @@ export default function BarNumbersAndLines({
   const canvasRefObj = useRef<CanvasRefObj>({});
   const { zoomLevel, mouseDown } = useAppSelector((state) => state.zoomLevel);
   const sequencerLengthBars = useAppSelector(
-    (state) => state.sequencerLength.length
+    (state) => state.sequencerLength.lengthBars
   );
   const barNumberData = useAppSelector((state) => state.barNumberData);
   let sequencerLengthPx = calculateSequencerLengthPx(

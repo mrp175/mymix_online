@@ -3,13 +3,6 @@ import "./TrackLane.scss";
 import { useAppSelector } from "../../../../redux/hooks";
 import BarNumbersAndLines from "../BarNumbersAndLines/BarNumbersAndLines";
 import {
-  pixelsPerBar,
-  drawLine,
-  lineWidth,
-  minimumLineSpacing,
-  strokeStyle,
-  applyCtxProperties,
-  setPixelsPerLine,
   calculateSequencerLengthPx,
   drawBarLines,
 } from "../../../../utils/canvas";
@@ -20,7 +13,7 @@ export default function TrackLane() {
   const ids = useAppSelector((state) => state.waveformIds);
   const zoomLevel = useAppSelector((state) => state.zoomLevel.zoomLevel);
   const sequencerLengthBars = useAppSelector(
-    (state) => state.sequencerLength.length
+    (state) => state.sequencerLength.lengthBars
   );
 
   useEffect(

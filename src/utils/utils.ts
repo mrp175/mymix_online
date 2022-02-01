@@ -1,5 +1,3 @@
-import { useRef } from "react";
-
 export function convertRemToPixels(rem: number): number {
   return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
@@ -48,19 +46,6 @@ export function mapNumberRange(
   out_max: number
 ) {
   return ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
-}
-
-export function useCreateNullRefs<T>(
-  refNames: string[],
-  type: T
-): {
-  [key: string]: React.RefObject<T>;
-} {
-  let refs: { [key: string]: React.RefObject<T> } = {};
-  for (let i = 0; i < refNames.length; i += 1) {
-    refs[`${refNames[i]}`] = useRef<T>(null);
-  }
-  return refs;
 }
 
 export function addGenericEventListener(

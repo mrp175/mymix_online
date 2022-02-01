@@ -3,7 +3,7 @@ import "../Transport/Transport";
 import Transport from "../Transport/Transport";
 import Main from "../Main/Main";
 import BottomSection from "../BottomSection/BottomSection";
-import BarNumberData from "../Utilties/BarNumberData/BarNumberData";
+import BarNumberData from "../Utilties/BarNumberData";
 
 function App() {
   return (
