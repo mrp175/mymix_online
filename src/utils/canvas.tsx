@@ -253,7 +253,7 @@ export function createBarNumberData(
   return result;
 }
 
-//Draws lines using bar number data
+//Draws lines and numbers using bar number data
 export function drawBarNumbers(
   refObj: React.MutableRefObject<CanvasRefObj>,
   parentRef: HTMLDivElement,

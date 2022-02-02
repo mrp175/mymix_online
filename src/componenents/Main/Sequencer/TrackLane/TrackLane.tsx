@@ -13,7 +13,7 @@ export default function TrackLane() {
   const ids = useAppSelector((state) => state.waveformIds);
   const zoomLevel = useAppSelector((state) => state.zoomLevel.zoomLevel);
   const sequencerLengthBars = useAppSelector(
-    (state) => state.sequencerLength.lengthBars
+    (state) => state.sequencerLength.requiredLengthBars
   );
 
   useEffect(

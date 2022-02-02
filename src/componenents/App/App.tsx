@@ -5,6 +5,7 @@ import Main from "../Main/Main";
 import BottomSection from "../BottomSection/BottomSection";
 import BarNumberData from "../Utilties/BarNumberData";
 import { FileBrowser } from "../FileBrowser/FileBrowser";
+import SetSequencerLength from "../Utilties/SetSequencerLength";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <FileBrowser />
       <div className="utilities">
         <BarNumberData />
+        <SetSequencerLength />
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ export default function BarNumbersAndLines({
   const canvasRefObj = useRef<CanvasRefObj>({});
   const { zoomLevel, mouseDown } = useAppSelector((state) => state.zoomLevel);
   const sequencerLengthBars = useAppSelector(
-    (state) => state.sequencerLength.lengthBars
+    (state) => state.sequencerLength.requiredLengthBars
   );
   const barNumberData = useAppSelector((state) => state.barNumberData);
   let sequencerLengthPx = calculateSequencerLengthPx(
@@ -58,6 +58,10 @@ export default function BarNumbersAndLines({
           const newState = [...state, ...newCanvases];
           return newState;
         });
+      }
+      if (componentRef.current) {
+        componentRef.current.style.width = sequencerLengthPx + "px";
+        componentRef.current.style.overflow = "hidden";
       }
     },
     [sequencerLengthPx]

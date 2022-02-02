@@ -12,7 +12,7 @@ export default function SetSequencerLength() {
   const dispatch = useAppDispatch();
 
   useEffect(
-    // Sets required sequencer length to the width of the window if sequencerLengthBars is less than thiss
+    // Sets required sequencer length to the width of the window if sequencerLengthBars is less than this
     function () {
       const sequencerWidthPx = pxRight - pxLeft;
       const sequencerWidthBars =
