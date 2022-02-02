@@ -1,46 +1,79 @@
-# Getting Started with Create React App
+# My Mix Online
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A DAW, but not in the conventioal sense. It can probably be best described as a mix designer more than anything else. 
 
-## Available Scripts
+![project image](https://res.cloudinary.com/mrp175/image/upload/v1643814754/github/Animation4_ximdeq.gif)
 
-In the project directory, you can run:
+## Aim
 
-### `npm start`
+The aim of the project are to create an app with a digital audio workstation like interface, that allows users to upload their own music files, import them into the editor, and mix them together however they see fit.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Current features
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+* Display audio files as waveforms - Implemented using waveform-data.js and HTML canvas
+    *  Draw entire waveform - Due to canvas having a theoretical maximum width, for high zoom levels, the waveforms is drawn across multiple canvases that seemlessly stiched together.
+* Waveform gain control - This changes the hight of the waveform, and will reflect the volume of the audio file. 
+* Zoom functionality
+    * Display bar lines and bar counts to match zoom level - Implemented with HTML canvas
+    * Match waveform to zoom level - Implemented by pre loading the waveform at various zoom levels and transitioning between them using css transform scale property. This is to improve performance. Redrawing an entire waveform to canvas with hundreds of thousnads of data points in real time is impractical. 
+    * Keep scroll position when zooming
+* Waveform positioning with click and drag 
+    * Basic snapping implementation that snaps the waveform to the nearest bar. 
+* Extract metadata from audio files (artist, title, album etc) - Implemented using musicmetadata package.
+* Detect song BPM - Implemented using the web-audio-beat-detector package.
 
-### `npm test`
+## What features still need to be added
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* File browser to manage audio files.
+* Drag and drop support to drag audio files onto the sequencer.
+* Set project tempo.
+* Set indivial waveform tempo.
+* Allow for more snapping configurations when dragging waveforms.
+* Allow waveforms to be dragged between tracks.
+* Implement automation ui.
+* Add and delete tracks.
+* Add loop markers.
+* Save and restore sessions
+* Implement audio - prototyped with the Web Audio API previously and confirmed working as expected. 
+    * Play track and at correct time based on waveform position on sequencer and playhead position.
+    * Stop playback.
+    * Change track tempo when changed in ui.
+    * Implement effects and audio changes based on automation data (hight pass filter, volume).
+    * Loop audio between loop markers. 
+    * Export mix to MP3 and Wav.
 
-### `npm run build`
+## Tech Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* React
+* Typescript
+* Redux
+* Web Audio Api
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Run locally
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+These instructions will help you setup a local development instance of the app if you want to run it locally.
 
-### `npm run eject`
+### Get the repo
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+git clone https://github.com/mrp175/mymix_online.git
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Navigate to the folder
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+cd mymix_online
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Install the dependencies
 
-## Learn More
+```
+npm install
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Start the app in development mode
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+npm start
+```
+Then go to http://localhost:3000 to view it in the browser.
