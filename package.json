@@ -1,5 +1,5 @@
 {
-  "homepage": "https://mrp175.github.io/mymix-online",
+  "homepage": "https://mrp175.github.io/mymix_online",
   "name": "client",
   "version": "0.1.0",
   "private": true,
@@ -19,13 +19,14 @@
     "react-redux": "^7.2.6",
     "react-scripts": "4.0.3",
     "sass": "^1.49.0",
+    "styled-components": "^5.3.3",
     "typescript": "^4.5.5",
     "waveform-data": "^4.3.0",
     "web-audio-beat-detector": "^8.1.27",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "BROWSER=none react-scripts start",
+    "start": "BROWSER=none DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -51,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@types/styled-components": "^5.1.21",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",
     "husky": "^4.3.8",

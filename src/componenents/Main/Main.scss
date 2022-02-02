@@ -22,6 +22,7 @@
   }
 
   .sequencer {
+    width: 100%;
     display: grid;
     grid-template-columns: 1rem auto;
     overflow-x: scroll;
