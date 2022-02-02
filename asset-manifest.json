@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/mymix_online/static/css/main.7637b1e9.chunk.css",
+    "main.js": "/mymix_online/static/js/main.25c04290.chunk.js",
+    "main.js.map": "/mymix_online/static/js/main.25c04290.chunk.js.map",
+    "runtime-main.js": "/mymix_online/static/js/runtime-main.aa37f4c4.js",
+    "runtime-main.js.map": "/mymix_online/static/js/runtime-main.aa37f4c4.js.map",
+    "static/js/2.0c249ad1.chunk.js": "/mymix_online/static/js/2.0c249ad1.chunk.js",
+    "static/js/2.0c249ad1.chunk.js.map": "/mymix_online/static/js/2.0c249ad1.chunk.js.map",
+    "static/js/3.803675b0.chunk.js": "/mymix_online/static/js/3.803675b0.chunk.js",
+    "static/js/3.803675b0.chunk.js.map": "/mymix_online/static/js/3.803675b0.chunk.js.map",
+    "index.html": "/mymix_online/index.html",
+    "static/css/main.7637b1e9.chunk.css.map": "/mymix_online/static/css/main.7637b1e9.chunk.css.map",
+    "static/js/2.0c249ad1.chunk.js.LICENSE.txt": "/mymix_online/static/js/2.0c249ad1.chunk.js.LICENSE.txt",
+    "static/media/audio1.08952bdd.mp3": "/mymix_online/static/media/audio1.08952bdd.mp3",
+    "static/media/play.353c4e28.svg": "/mymix_online/static/media/play.353c4e28.svg",
+    "static/media/stop.aea36ecb.svg": "/mymix_online/static/media/stop.aea36ecb.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.aa37f4c4.js",
+    "static/js/2.0c249ad1.chunk.js",
+    "static/css/main.7637b1e9.chunk.css",
+    "static/js/main.25c04290.chunk.js"
+  ]
+}
